@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TaskStack</title>
   <style>
-    /* Default theme: Blue (Light monochromatic palette) */
     :root {
       --bg-outer: #bae6fd;
       --bg-inner: #e0f2fe;
@@ -14,114 +13,10 @@
       --circle-border: rgba(2, 132, 199, 0.25);
       --text: #0369a1;
       --text-muted: #0284c7;
-      --card-bg: rgba(255, 255, 255, 0.82);
+      --card-bg: rgba(255, 255, 255, 0.85);
       --card-border: rgba(186, 230, 253, 0.9);
       --input-bg: rgba(255, 255, 255, 0.95);
       --accent: #0284c7;
-    }
-
-    [data-theme="red"] {
-      --bg-outer: #fecdd3;
-      --bg-inner: #ffe4e6;
-      --circle-glow: #ffe4e6;
-      --circle-core: #ffffff;
-      --circle-border: rgba(225, 29, 72, 0.2);
-      --text: #be123c;
-      --text-muted: #e11d48;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(254, 205, 211, 0.9);
-      --accent: #e11d48;
-    }
-
-    [data-theme="orange"] {
-      --bg-outer: #fed7aa;
-      --bg-inner: #ffedd5;
-      --circle-glow: #ffedd5;
-      --circle-core: #ffffff;
-      --circle-border: rgba(234, 88, 12, 0.2);
-      --text: #c2410c;
-      --text-muted: #ea580c;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(254, 215, 170, 0.9);
-      --accent: #ea580c;
-    }
-
-    [data-theme="yellow"] {
-      --bg-outer: #fef08a;
-      --bg-inner: #fef9c3;
-      --circle-glow: #fefce8;
-      --circle-core: #ffffff;
-      --circle-border: rgba(202, 138, 4, 0.25);
-      --text: #a16207;
-      --text-muted: #ca8a04;
-      --card-bg: rgba(255, 255, 255, 0.88);
-      --card-border: rgba(254, 240, 138, 0.9);
-      --accent: #ca8a04;
-    }
-
-    [data-theme="green"] {
-      --bg-outer: #bbf7d0;
-      --bg-inner: #dcfce7;
-      --circle-glow: #f0fdf4;
-      --circle-core: #ffffff;
-      --circle-border: rgba(22, 163, 74, 0.2);
-      --text: #15803d;
-      --text-muted: #16a34a;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(187, 247, 208, 0.9);
-      --accent: #16a34a;
-    }
-
-    [data-theme="indigo"] {
-      --bg-outer: #c7d2fe;
-      --bg-inner: #e0e7ff;
-      --circle-glow: #eef2ff;
-      --circle-core: #ffffff;
-      --circle-border: rgba(79, 70, 229, 0.2);
-      --text: #4338ca;
-      --text-muted: #4f46e5;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(199, 210, 254, 0.9);
-      --accent: #4f46e5;
-    }
-
-    [data-theme="violet"] {
-      --bg-outer: #ddd6fe;
-      --bg-inner: #ede9fe;
-      --circle-glow: #f5f3ff;
-      --circle-core: #ffffff;
-      --circle-border: rgba(124, 58, 237, 0.2);
-      --text: #6d28d9;
-      --text-muted: #7c3aed;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(221, 214, 254, 0.9);
-      --accent: #7c3aed;
-    }
-
-    [data-theme="pink"] {
-      --bg-outer: #fbcfe8;
-      --bg-inner: #fce7f3;
-      --circle-glow: #fdf2f8;
-      --circle-core: #ffffff;
-      --circle-border: rgba(219, 39, 119, 0.2);
-      --text: #be185d;
-      --text-muted: #db2777;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(251, 207, 232, 0.9);
-      --accent: #db2777;
-    }
-
-    [data-theme="grey"] {
-      --bg-outer: #e2e8f0;
-      --bg-inner: #f1f5f9;
-      --circle-glow: #f8fafc;
-      --circle-core: #ffffff;
-      --circle-border: rgba(100, 116, 139, 0.25);
-      --text: #334155;
-      --text-muted: #64748b;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: rgba(226, 232, 240, 0.9);
-      --accent: #475569;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -133,14 +28,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1.5rem;
+      padding: 2rem 1.5rem 4rem;
       transition: background 0.4s ease, color 0.4s ease;
       overflow-x: hidden;
     }
 
-    .container { width: 100%; max-width: 860px; position: relative; }
+    .container { width: 100%; max-width: 1400px; position: relative; }
 
-    /* Top Bar */
+    /* Top Bar & Settings */
     .top-bar { display: flex; justify-content: flex-end; width: 100%; margin-bottom: 1rem; position: relative; }
 
     .settings-btn {
@@ -167,31 +62,28 @@
       border: 1px solid var(--card-border);
       backdrop-filter: blur(16px);
       border-radius: 14px;
-      padding: 0.8rem;
-      width: 170px;
+      padding: 0.5rem;
+      width: 180px;
       z-index: 50;
       box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
-    .settings-dropdown h4 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem; color: var(--text-muted); }
-    .theme-option {
-      padding: 0.45rem 0.6rem;
+    .menu-item {
+      padding: 0.65rem 0.85rem;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.88rem;
-      font-weight: 500;
+      font-size: 0.9rem;
+      font-weight: 600;
       color: var(--text);
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      text-transform: capitalize;
+      justify-content: space-between;
     }
-    .theme-option:hover { background: rgba(0, 0, 0, 0.05); }
-    .color-dot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+    .menu-item:hover { background: rgba(0, 0, 0, 0.05); }
 
     /* Centered Header */
-    header { text-align: center; margin: 2rem 0 4rem; }
+    header { text-align: center; margin: 1.5rem 0 3.5rem; }
     .title-logo {
-      font-size: 3.2rem;
+      font-size: 3.5rem;
       font-weight: 900;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -199,66 +91,60 @@
       text-shadow: 0 2px 15px rgba(255, 255, 255, 0.8);
     }
 
-    /* Circles Center Display */
+    /* Portal Circles (0.8x scaled) */
     .home-grid {
-      display: flex;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      min-height: 480px;
       align-items: center;
-      gap: 4rem;
-      margin-top: 1rem;
+      justify-items: center;
+      margin-top: 3rem;
+      gap: 2rem;
     }
 
     .circle-portal {
-      width: 250px;
-      height: 250px;
+      width: 400px;
+      height: 400px;
+      max-width: 80vw;
+      max-height: 80vw;
       border-radius: 50%;
-      /* Lighter, glowing monochromatic core */
       background: radial-gradient(circle at center, var(--circle-core) 0%, var(--circle-glow) 60%, var(--bg-inner) 100%);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04), 0 0 40px rgba(255, 255, 255, 0.9), inset 0 0 20px rgba(255, 255, 255, 0.8);
-      border: 2px solid var(--circle-border);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.05), 0 0 70px rgba(255, 255, 255, 0.9), inset 0 0 45px rgba(255, 255, 255, 0.85);
+      border: 3px solid var(--circle-border);
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      position: relative;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
       text-align: center;
       user-select: none;
     }
 
     .circle-portal:hover {
-      transform: scale(1.06);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.06), 0 0 60px rgba(255, 255, 255, 1), inset 0 0 30px rgba(255, 255, 255, 0.9);
+      transform: scale(1.05);
+      box-shadow: 0 35px 80px rgba(0, 0, 0, 0.08), 0 0 100px rgba(255, 255, 255, 1), inset 0 0 60px rgba(255, 255, 255, 0.95);
     }
 
     .circle-portal h2 {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: 0.1em;
+      font-size: 1.85rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
       color: var(--text);
-      text-shadow: 0 1px 8px rgba(255, 255, 255, 0.8);
+      text-shadow: 0 2px 10px rgba(255, 255, 255, 0.85);
       pointer-events: none;
     }
 
-    /* Stacks Dropdown attached to the left circle */
-    .stacks-menu {
-      display: none;
-      position: absolute;
-      top: calc(100% + 15px);
-      width: 260px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(16px);
-      border-radius: 14px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-      z-index: 40;
-      max-height: 250px;
-      overflow-y: auto;
-      text-align: left;
+    @media (max-width: 1080px) {
+      .circle-portal { width: 310px; height: 310px; }
+      .circle-portal h2 { font-size: 1.5rem; }
     }
-    .dropdown-item { padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid rgba(0, 0, 0, 0.05); font-size: 0.9rem; font-weight: 600; color: var(--text); }
-    .dropdown-item:hover { background: rgba(0, 0, 0, 0.04); }
-    .dropdown-add { padding: 0.6rem 0.8rem; display: flex; gap: 0.4rem; background: rgba(255, 255, 255, 0.7); border-radius: 0 0 14px 14px; }
+
+    @media (max-width: 820px) {
+      .home-grid { grid-template-columns: 1fr; gap: 3rem; margin-top: 2rem; }
+      .circle-portal { width: 260px; height: 260px; }
+      .circle-portal h2 { font-size: 1.35rem; }
+    }
 
     /* Glass Panels */
     .view-panel {
@@ -267,21 +153,54 @@
       border: 1px solid var(--card-border);
       backdrop-filter: blur(20px);
       border-radius: 20px;
-      padding: 2.2rem;
+      padding: 2.5rem;
       box-shadow: 0 15px 40px rgba(0,0,0,0.05);
-      margin-top: 1rem;
+      max-width: 820px;
+      margin: 1rem auto 0;
     }
 
     .back-btn {
       background: none; border: none; color: var(--text-muted); cursor: pointer;
-      font-size: 0.9rem; font-weight: 600; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.95rem; font-weight: 600; margin-bottom: 1.8rem; display: inline-flex; align-items: center; gap: 0.4rem;
     }
     .back-btn:hover { color: var(--text); }
 
-    form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .create-stack-box {
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stacks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .stack-card {
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.4rem 1rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text);
+    }
+    .stack-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    #createTaskForm { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .full-width { grid-column: 1 / -1; }
     input, select, button {
-      padding: 0.8rem 1rem;
+      padding: 0.85rem 1rem;
       border-radius: 10px;
       border: 1px solid var(--card-border);
       font-size: 0.95rem;
@@ -296,7 +215,6 @@
       border: none;
       font-weight: 700;
       cursor: pointer;
-      transition: opacity 0.2s;
     }
     button.primary:hover { opacity: 0.9; }
 
@@ -312,34 +230,133 @@
       align-items: center;
     }
     .meta { display: flex; gap: 0.6rem; font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem; align-items: center; }
-    .tag { background: rgba(255, 255, 255, 0.9); border: 1px solid var(--card-border); padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 600; color: var(--text); }
-    .badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 600; }
-    .badge.not_started { background: #f1f5f9; color: #475569; }
-    .badge.done { background: #dcfce7; color: #15803d; }
-    .actions button { cursor: pointer; border: 1px solid var(--card-border); background: white; border-radius: 8px; padding: 0.35rem 0.65rem; }
-
-    @media (max-width: 650px) {
-      .home-grid { flex-direction: column; gap: 2.5rem; }
-      .circle-portal { width: 210px; height: 210px; }
+    .tag {
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      transition: filter 0.15s ease, transform 0.15s ease;
+      border: 1px solid transparent;
     }
+    .tag:hover {
+      filter: brightness(0.95);
+      transform: translateY(-1px);
+    }
+    
+    .actions {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .status-select {
+      padding: 0.35rem 0.6rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .status-select.not_started {
+      background: rgba(255, 255, 255, 0.85);
+      color: #475569;
+    }
+    .status-select.in_progress {
+      background: #fef3c7;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+    .status-select.done {
+      background: #dcfce7;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+
+    .btn-delete {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 8px;
+      font-size: 1.2rem;
+      line-height: 1;
+      padding: 0.35rem 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-delete:hover {
+      background: #ef4444;
+      color: white;
+    }
+
+    /* Modals for Settings */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(25px);
+      border-radius: 18px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+    }
+    .modal-card h3 { margin-bottom: 1.25rem; font-size: 1.25rem; }
+    .modal-card .form-group { margin-bottom: 1.2rem; }
+    .modal-card label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 0.8rem; margin-top: 1.5rem; }
+    .btn-secondary { background: rgba(255, 255, 255, 0.8); border: 1px solid var(--card-border); cursor: pointer; }
+    .btn-danger { background: #ef4444; color: white; border: none; font-weight: 600; cursor: pointer; }
+
+    /* Custom Color Wheel Styling */
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+    .preset-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .preset-dot:hover { transform: scale(1.25); }
+
+    .tasks-checklist {
+      max-height: 180px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+    }
+    .check-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.88rem; }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Top Bar with Settings Dropdown -->
+    <!-- Top Bar with Settings Menu -->
     <div class="top-bar">
       <button class="settings-btn" onclick="toggleSettings(event)">&#9881; Settings</button>
       <div class="settings-dropdown" id="settingsDropdown">
-        <h4>Color Theme</h4>
-        <div class="theme-option" onclick="applyTheme('blue')"><span class="color-dot" style="background: #bae6fd;"></span> Blue</div>
-        <div class="theme-option" onclick="applyTheme('red')"><span class="color-dot" style="background: #fecdd3;"></span> Red</div>
-        <div class="theme-option" onclick="applyTheme('orange')"><span class="color-dot" style="background: #fed7aa;"></span> Orange</div>
-        <div class="theme-option" onclick="applyTheme('yellow')"><span class="color-dot" style="background: #fef08a;"></span> Yellow</div>
-        <div class="theme-option" onclick="applyTheme('green')"><span class="color-dot" style="background: #bbf7d0;"></span> Green</div>
-        <div class="theme-option" onclick="applyTheme('indigo')"><span class="color-dot" style="background: #c7d2fe;"></span> Indigo</div>
-        <div class="theme-option" onclick="applyTheme('violet')"><span class="color-dot" style="background: #ddd6fe;"></span> Violet</div>
-        <div class="theme-option" onclick="applyTheme('pink')"><span class="color-dot" style="background: #fbcfe8;"></span> Pink</div>
-        <div class="theme-option" onclick="applyTheme('grey')"><span class="color-dot" style="background: #e2e8f0;"></span> Grey</div>
+        <div class="menu-item" onclick="openDeleteModal()">Delete Stack &rarr;</div>
+        <div class="menu-item" onclick="openMergeModal()">Merge Stacks &rarr;</div>
+        <div class="menu-item" onclick="openColorModal()">Color &rarr;</div>
       </div>
     </div>
 
@@ -348,24 +365,31 @@
       <div class="title-logo">TASKSTACK</div>
     </header>
 
-    <!-- Main Navigation Hub (Light Monochromatic Circles) -->
+    <!-- Main Navigation Hub -->
     <div class="home-grid" id="homeView">
-      <!-- Left Circle: My Stacks -->
-      <div class="circle-portal" id="myStacksCircle" onclick="toggleStacks(event)">
+      <div class="circle-portal" onclick="showStacksView()">
         <h2>MY STACKS</h2>
-        <div class="stacks-menu" id="stacksDropdown">
-          <div class="dropdown-item" onclick="openStackView('All')">All Tasks</div>
-          <div id="dynamicStacks"></div>
-          <div class="dropdown-add" onclick="event.stopPropagation()">
-            <input type="text" id="newStackInput" placeholder="New stack..." style="padding: 0.4rem; font-size: 0.85rem;" />
-            <button class="primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="createStack()">Add</button>
-          </div>
-        </div>
       </div>
-
-      <!-- Right Circle: Create Task -->
       <div class="circle-portal" onclick="showCreateTaskView()">
         <h2>CREATE TASK</h2>
+      </div>
+    </div>
+
+    <!-- My Stacks View -->
+    <div class="view-panel" id="stacksView">
+      <button class="back-btn" onclick="showHomeView()">&larr; Back to Menu</button>
+      
+      <div class="create-stack-box">
+        <h3 style="margin-bottom: 0.8rem; font-size: 1.1rem;">Create New Stack</h3>
+        <form id="createStackForm" onsubmit="handleCreateStack(event)" style="display: flex; gap: 0.75rem;">
+          <input type="text" id="newStackInput" placeholder="Stack Name (e.g. Work, Errands)" style="flex-grow: 1;" required />
+          <button type="submit" class="primary" style="padding: 0 1.8rem;">Create Stack</button>
+        </form>
+      </div>
+
+      <h3 style="margin-bottom: 1.25rem; font-size: 1.1rem;">Choose a Stack</h3>
+      <div class="stacks-grid" id="stacksListGrid">
+        <div class="stack-card" onclick="openStackView('All')">All Tasks</div>
       </div>
     </div>
 
@@ -376,20 +400,17 @@
       <form id="createTaskForm">
         <input type="text" id="title" class="full-width" placeholder="Task Name" required />
         <input type="text" id="course" placeholder="Tag / Context (e.g. CS101, Chores)" required />
-        
         <select id="stackSelect" required></select>
-
         <input type="date" id="due_date" required />
         <input type="time" id="due_time" value="23:59" />
         <input type="url" id="link" class="full-width" placeholder="Link (optional)" />
-        
         <button type="submit" class="primary full-width">Add Task to Stack</button>
       </form>
     </div>
 
     <!-- Task List View -->
     <div class="view-panel" id="listView">
-      <button class="back-btn" onclick="showHomeView()">&larr; Back to Menu</button>
+      <button class="back-btn" onclick="showStacksView()">&larr; Back to Stacks</button>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <h3 id="currentStackHeading">All Tasks</h3>
         <button class="primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="showCreateTaskView()">+ New Task</button>
@@ -398,62 +419,314 @@
     </div>
   </div>
 
+  <!-- MODAL: Delete Stack -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal-card">
+      <h3>Delete Stack</h3>
+      <div class="form-group">
+        <label>Select stack to remove:</label>
+        <select id="deleteStackSelect" style="width: 100%;"></select>
+      </div>
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text);">
+          <input type="checkbox" id="deleteTasksCheckbox" /> Also delete all tasks inside this stack
+        </label>
+        <span style="font-size: 0.78rem; color: var(--text-muted);">If unchecked, tasks are safely moved to the "General" stack.</span>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModals()">Cancel</button>
+        <button class="btn-danger" onclick="confirmDeleteStack()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Merge Stacks -->
+  <div class="modal-overlay" id="mergeModal">
+    <div class="modal-card">
+      <h3>Merge Stacks</h3>
+      <div class="form-group">
+        <label>Transfer tasks FROM:</label>
+        <select id="mergeSourceSelect" style="width: 100%;" onchange="loadSourceTasksForMerge()"></select>
+      </div>
+      <div class="form-group">
+        <label>Transfer tasks INTO:</label>
+        <select id="mergeTargetSelect" style="width: 100%;"></select>
+      </div>
+      <div class="form-group">
+        <label>Choose tasks to transfer (leave all unchecked to merge entire stack):</label>
+        <div class="tasks-checklist" id="mergeTasksChecklist">
+          <p style="color: var(--text-muted); font-size: 0.82rem;">Select a source stack to view tasks.</p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModals()">Cancel</button>
+        <button class="primary" onclick="confirmMergeStacks()">Merge</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Color Theme -->
+  <div class="modal-overlay" id="colorModal">
+    <div class="modal-card" style="text-align: center;">
+      <h3>Choose Theme Color</h3>
+      
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 1.2rem; margin: 1.5rem 0;">
+        <div style="position: relative; display: inline-block;">
+          <input type="color" id="customColorPicker" value="#0284c7" oninput="handleColorWheelInput(this.value)" 
+                 style="width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--card-border); cursor: pointer; padding: 0; background: none;" />
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Click the circle above to open the full color wheel.</p>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+          <button type="button" class="preset-dot" style="background: #0284c7;" onclick="setColorFromHex('#0284c7')" title="Blue"></button>
+          <button type="button" class="preset-dot" style="background: #e11d48;" onclick="setColorFromHex('#e11d48')" title="Red"></button>
+          <button type="button" class="preset-dot" style="background: #ea580c;" onclick="setColorFromHex('#ea580c')" title="Orange"></button>
+          <button type="button" class="preset-dot" style="background: #ca8a04;" onclick="setColorFromHex('#ca8a04')" title="Yellow"></button>
+          <button type="button" class="preset-dot" style="background: #16a34a;" onclick="setColorFromHex('#16a34a')" title="Green"></button>
+          <button type="button" class="preset-dot" style="background: #4f46e5;" onclick="setColorFromHex('#4f46e5')" title="Indigo"></button>
+          <button type="button" class="preset-dot" style="background: #7c3aed;" onclick="setColorFromHex('#7c3aed')" title="Violet"></button>
+          <button type="button" class="preset-dot" style="background: #db2777;" onclick="setColorFromHex('#db2777')" title="Pink"></button>
+          <button type="button" class="preset-dot" style="background: #475569;" onclick="setColorFromHex('#475569')" title="Grey"></button>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModals()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Customize Tag Color -->
+  <div class="modal-overlay" id="tagColorModal">
+    <div class="modal-card" style="text-align: center;">
+      <h3 id="tagColorHeading">Tag Color</h3>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 1.2rem 0;">
+        <input type="color" id="tagColorPicker" value="#0284c7" 
+               style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--card-border); cursor: pointer; padding: 0; background: none;" />
+        <p style="font-size: 0.82rem; color: var(--text-muted);">Pick a custom color for this tag across all tasks.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="resetTagColor()">Reset Auto</button>
+        <button class="primary" onclick="saveCustomTagColor()">Save</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let stacks = [];
     let activeStack = 'All';
 
-    // Theme Management
-    function applyTheme(name) {
-      if (name === 'blue') {
-        document.documentElement.removeAttribute('data-theme');
-      } else {
-        document.documentElement.setAttribute('data-theme', name);
-      }
-      localStorage.setItem('taskstack-theme', name);
-      document.getElementById('settingsDropdown').style.display = 'none';
-    }
-
-    const savedTheme = localStorage.getItem('taskstack-theme') || 'blue';
-    applyTheme(savedTheme);
-
+    // --- Settings Dropdown Toggle & Window Dismiss ---
     function toggleSettings(e) {
       e.stopPropagation();
       const menu = document.getElementById('settingsDropdown');
       menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-      document.getElementById('stacksDropdown').style.display = 'none';
-    }
-
-    function toggleStacks(e) {
-      e.stopPropagation();
-      const menu = document.getElementById('stacksDropdown');
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-      document.getElementById('settingsDropdown').style.display = 'none';
     }
 
     window.onclick = () => {
-      document.getElementById('settingsDropdown').style.display = 'none';
-      document.getElementById('stacksDropdown').style.display = 'none';
+      const dd = document.getElementById('settingsDropdown');
+      if (dd) dd.style.display = 'none';
     };
 
-    // Stacks API Integration
+    function closeModals() {
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+    }
+
+    // --- Color Wheel & Dynamic Theme Management ---
+    function hexToHSL(hex) {
+      let r = parseInt(hex.slice(1, 3), 16) / 255;
+      let g = parseInt(hex.slice(3, 5), 16) / 255;
+      let b = parseInt(hex.slice(5, 7), 16) / 255;
+
+      let max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0;
+      } else {
+        let d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+    }
+
+    function applyDynamicColor(hex) {
+      const { h, s } = hexToHSL(hex);
+      const root = document.documentElement;
+
+      const bgOuter = `hsl(${h}, ${Math.min(s, 75)}%, 88%)`;
+      const bgInner = `hsl(${h}, ${Math.min(s, 65)}%, 95%)`;
+      const circleGlow = `hsl(${h}, ${Math.min(s, 60)}%, 94%)`;
+      const circleBorder = `hsla(${h}, ${Math.min(s, 80)}%, 40%, 0.25)`;
+      const textColor = `hsl(${h}, ${Math.min(s + 10, 90)}%, 28%)`;
+      const textMuted = `hsl(${h}, ${Math.min(s + 5, 80)}%, 40%)`;
+      const accent = `hsl(${h}, ${Math.min(s, 85)}%, 45%)`;
+
+      root.style.setProperty('--bg-outer', bgOuter);
+      root.style.setProperty('--bg-inner', bgInner);
+      root.style.setProperty('--circle-glow', circleGlow);
+      root.style.setProperty('--circle-border', circleBorder);
+      root.style.setProperty('--text', textColor);
+      root.style.setProperty('--text-muted', textMuted);
+      root.style.setProperty('--accent', accent);
+      root.style.setProperty('--card-border', `hsla(${h}, ${Math.min(s, 70)}%, 80%, 0.8)`);
+
+      const picker = document.getElementById('customColorPicker');
+      if (picker) picker.value = hex;
+      localStorage.setItem('taskstack-hex', hex);
+    }
+
+    function handleColorWheelInput(hex) {
+      applyDynamicColor(hex);
+    }
+
+    function setColorFromHex(hex) {
+      applyDynamicColor(hex);
+    }
+
+    // Modal Triggers
+    function openColorModal() {
+      document.getElementById('settingsDropdown').style.display = 'none';
+      document.getElementById('colorModal').style.display = 'flex';
+    }
+
+    function openDeleteModal() {
+      document.getElementById('settingsDropdown').style.display = 'none';
+      const select = document.getElementById('deleteStackSelect');
+      if (stacks.length === 0) {
+        alert("You have no custom stacks to delete.");
+        return;
+      }
+      select.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+      document.getElementById('deleteModal').style.display = 'flex';
+    }
+
+    async function confirmDeleteStack() {
+      const stackName = document.getElementById('deleteStackSelect').value;
+      const deleteTasks = document.getElementById('deleteTasksCheckbox').checked;
+
+      if (!stackName) return;
+
+      const warningMessage = deleteTasks
+        ? `Are you sure you want to permanently delete "${stackName}" AND all tasks inside it?`
+        : `Are you sure you want to delete the stack "${stackName}"?`;
+
+      if (!confirm(warningMessage)) return;
+
+      const res = await fetch(`/stacks/${encodeURIComponent(stackName)}?delete_tasks=${deleteTasks}`, {
+        method: 'DELETE'
+      });
+
+      if (res.ok) {
+        closeModals();
+        await loadStacks();
+        showStacksView();
+      } else {
+        const err = await res.json();
+        alert(err.detail || "Failed to delete stack");
+      }
+    }
+
+    function openMergeModal() {
+      document.getElementById('settingsDropdown').style.display = 'none';
+      if (stacks.length < 2) {
+        alert("You need at least two custom stacks to perform a merge.");
+        return;
+      }
+      const sourceSelect = document.getElementById('mergeSourceSelect');
+      const targetSelect = document.getElementById('mergeTargetSelect');
+
+      sourceSelect.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+      targetSelect.innerHTML = stacks.map((s, idx) => `<option value="${s.name}" ${idx === 1 ? 'selected' : ''}>${s.name}</option>`).join('');
+
+      loadSourceTasksForMerge();
+      document.getElementById('mergeModal').style.display = 'flex';
+    }
+
+    async function loadSourceTasksForMerge() {
+      const source = document.getElementById('mergeSourceSelect').value;
+      const checklist = document.getElementById('mergeTasksChecklist');
+      
+      const res = await fetch(`/assignments?stack=${encodeURIComponent(source)}`);
+      const tasks = await res.json();
+
+      if (tasks.length === 0) {
+        checklist.innerHTML = `<p style="color: var(--text-muted); font-size: 0.82rem;">No tasks inside this stack.</p>`;
+        return;
+      }
+
+      checklist.innerHTML = tasks.map(t => `
+        <label class="check-item">
+          <input type="checkbox" value="${t.id}" class="merge-task-cb" />
+          <span>${t.title}</span>
+        </label>
+      `).join('');
+    }
+
+    async function confirmMergeStacks() {
+      const source = document.getElementById('mergeSourceSelect').value;
+      const target = document.getElementById('mergeTargetSelect').value;
+
+      if (source === target) {
+        alert("Source and target stacks must be different.");
+        return;
+      }
+
+      const checkedBoxes = Array.from(document.querySelectorAll('.merge-task-cb:checked')).map(cb => parseInt(cb.value));
+      const payload = {
+        source_stack: source,
+        target_stack: target,
+        task_ids: checkedBoxes.length > 0 ? checkedBoxes : null
+      };
+
+      const res = await fetch('/stacks/merge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        closeModals();
+        openStackView(target);
+      } else {
+        const err = await res.json();
+        alert(err.detail || "Failed to merge stacks");
+      }
+    }
+
+    // Stacks Management
     async function loadStacks() {
       const res = await fetch('/stacks');
       stacks = await res.json();
       
-      const dynamicList = document.getElementById('dynamicStacks');
-      dynamicList.innerHTML = stacks.map(s => `
-        <div class="dropdown-item" onclick="openStackView('${s.name}')">${s.name}</div>
-      `).join('');
+      const grid = document.getElementById('stacksListGrid');
+      if (grid) {
+        grid.innerHTML = `
+          <div class="stack-card" onclick="openStackView('All')">All Tasks</div>
+          ${stacks.map(s => `
+            <div class="stack-card" onclick="openStackView('${s.name}')">${s.name}</div>
+          `).join('')}
+        `;
+      }
 
       const select = document.getElementById('stackSelect');
-      if (stacks.length === 0) {
-        select.innerHTML = `<option value="General">General</option>`;
-      } else {
-        select.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+      if (select) {
+        if (stacks.length === 0) {
+          select.innerHTML = `<option value="General">General</option>`;
+        } else {
+          select.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+        }
       }
     }
 
-    async function createStack() {
+    async function handleCreateStack(e) {
+      e.preventDefault();
       const input = document.getElementById('newStackInput');
       const name = input.value.trim();
       if (!name) return;
@@ -474,29 +747,39 @@
       }
     }
 
-    // View Navigation
-    function showHomeView() {
-      document.getElementById('homeView').style.display = 'flex';
+    // View Navigation Helpers
+    function hideAllViews() {
+      document.getElementById('homeView').style.display = 'none';
+      document.getElementById('stacksView').style.display = 'none';
       document.getElementById('createView').style.display = 'none';
       document.getElementById('listView').style.display = 'none';
     }
 
+    function showHomeView() {
+      hideAllViews();
+      document.getElementById('homeView').style.display = 'grid';
+    }
+
+    function showStacksView() {
+      hideAllViews();
+      document.getElementById('stacksView').style.display = 'block';
+      loadStacks();
+    }
+
     function showCreateTaskView() {
-      document.getElementById('homeView').style.display = 'none';
+      hideAllViews();
       document.getElementById('createView').style.display = 'block';
-      document.getElementById('listView').style.display = 'none';
       if (activeStack !== 'All') {
-        document.getElementById('stackSelect').value = activeStack;
+        const select = document.getElementById('stackSelect');
+        if (select) select.value = activeStack;
       }
     }
 
     async function openStackView(stackName) {
       activeStack = stackName;
+      hideAllViews();
       document.getElementById('currentStackHeading').innerText = stackName === 'All' ? 'All Tasks' : stackName;
-      document.getElementById('homeView').style.display = 'none';
-      document.getElementById('createView').style.display = 'none';
       document.getElementById('listView').style.display = 'block';
-      
       await fetchAssignments();
     }
 
@@ -517,19 +800,26 @@
 
       container.innerHTML = tasks.map(t => `
         <div class="task-card">
-          <div>
-            <div style="font-weight: 600; color: var(--text); ${t.status === 'done' ? 'text-decoration: line-through; opacity: 0.5;' : ''}">${t.title}</div>
+          <div style="flex-grow: 1; padding-right: 1rem;">
+            <div style="font-weight: 600; color: var(--text); ${t.status === 'done' ? 'text-decoration: line-through; opacity: 0.5;' : ''}">
+              ${t.title}
+            </div>
             <div class="meta">
               <span class="tag">${t.stack_name}</span>
-              <span class="tag">${t.course}</span>
+              <span class="tag" style="${getTagStyle(t.course)}" title="Click to customize color" onclick="openTagColorEditor('${t.course}')">
+                ${t.course}
+              </span>
               <span>Due: ${t.due_date} ${t.due_time || ''}</span>
               ${t.link ? `<a href="${t.link}" target="_blank" style="color: var(--accent); font-weight: 600;">Link</a>` : ''}
-              <span class="badge ${t.status}">${t.status.replace('_', ' ')}</span>
             </div>
           </div>
           <div class="actions">
-            ${t.status !== 'done' ? `<button onclick="updateStatus(${t.id}, 'done')">&#10003;</button>` : ''}
-            <button onclick="deleteTask(${t.id})" style="color: #ef4444;">&times;</button>
+            <select class="status-select ${t.status}" onchange="updateStatus(${t.id}, this.value)">
+              <option value="not_started" ${t.status === 'not_started' ? 'selected' : ''}>Not Started</option>
+              <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+              <option value="done" ${t.status === 'done' ? 'selected' : ''}>Done</option>
+            </select>
+            <button class="btn-delete" title="Delete Task" onclick="deleteTask(${t.id})">&times;</button>
           </div>
         </div>
       `).join('');
@@ -573,8 +863,87 @@
       }
     }
 
-    // Initial load
+    // Restore saved theme and initial load
+    const savedHex = localStorage.getItem('taskstack-hex') || '#0284c7';
+    applyDynamicColor(savedHex);
     loadStacks();
+
+    // --- Tag Color Pipeline ---
+
+    let currentEditingTag = null;
+
+    function getCustomTagColors() {
+      try {
+        return JSON.parse(localStorage.getItem('taskstack-tag-colors')) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    // Hash string into a deterministic hue (0 - 359)
+    function hashStringToHue(str) {
+      let hash = 0;
+      const clean = str.trim().toLowerCase();
+      for (let i = 0; i < clean.length; i++) {
+        hash = clean.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return Math.abs(hash % 360);
+    }
+
+    // Resolves background and text styling
+    function getTagStyle(tagName) {
+      const customColors = getCustomTagColors();
+      const customHex = customColors[tagName.trim().toLowerCase()];
+
+      if (customHex) {
+        const { h, s } = hexToHSL(customHex);
+        return `background-color: hsl(${h}, ${Math.min(s, 75)}%, 90%); color: hsl(${h}, ${Math.min(s + 20, 95)}%, 25%); border-color: hsla(${h}, ${s}%, 50%, 0.25);`;
+      }
+
+      // Automatic fallback derived from tag name
+      const hue = hashStringToHue(tagName);
+      return `background-color: hsl(${hue}, 70%, 91%); color: hsl(${hue}, 85%, 26%); border-color: hsla(${hue}, 70%, 50%, 0.25);`;
+    }
+
+    // Modal Handlers
+    function openTagColorEditor(tagName) {
+      currentEditingTag = tagName;
+      document.getElementById('tagColorHeading').innerText = `Color for "${tagName}"`;
+      
+      const customColors = getCustomTagColors();
+      const existingHex = customColors[tagName.trim().toLowerCase()];
+      
+      // Default color input to existing choice or calculated auto-hue
+      if (existingHex) {
+        document.getElementById('tagColorPicker').value = existingHex;
+      } else {
+        const hue = hashStringToHue(tagName);
+        document.getElementById('tagColorPicker').value = `hsl(${hue}, 70%, 50%)`;
+      }
+      
+      document.getElementById('tagColorModal').style.display = 'flex';
+    }
+
+    function saveCustomTagColor() {
+      if (!currentEditingTag) return;
+      const hex = document.getElementById('tagColorPicker').value;
+      const customColors = getCustomTagColors();
+      customColors[currentEditingTag.trim().toLowerCase()] = hex;
+      localStorage.setItem('taskstack-tag-colors', JSON.stringify(customColors));
+      
+      closeModals();
+      fetchAssignments();
+    }
+
+    function resetTagColor() {
+      if (!currentEditingTag) return;
+      const customColors = getCustomTagColors();
+      delete customColors[currentEditingTag.trim().toLowerCase()];
+      localStorage.setItem('taskstack-tag-colors', JSON.stringify(customColors));
+      
+      closeModals();
+      fetchAssignments();
+    }
   </script>
 </body>
 </html>

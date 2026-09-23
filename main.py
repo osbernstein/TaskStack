@@ -1,10 +1,10 @@
 import sqlite3
-from typing import Optional
+from typing import Optional, List
 from fastapi import FastAPI, HTTPException, Query, status
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-app = FastAPI(title="TaskStack API", version="1.2.0")
+app = FastAPI(title="TaskStack API", version="1.3.0")
 DB_FILE = "assignments.db"
 
 def get_db():
@@ -14,7 +14,6 @@ def get_db():
 
 def init_db():
     with get_db() as conn:
-        # Create stacks table
         conn.execute("""
             CREATE TABLE IF NOT EXISTS stacks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,7 +21,6 @@ def init_db():
             );
         """)
 
-        # Create assignments table
         conn.execute("""
             CREATE TABLE IF NOT EXISTS assignments (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,7 +34,6 @@ def init_db():
             );
         """)
 
-        # Migration helper for previous schemas
         cursor = conn.cursor()
         cols = [c[1] for c in cursor.execute("PRAGMA table_info(assignments)").fetchall()]
         if "stack_name" not in cols:
@@ -52,6 +49,11 @@ init_db()
 
 class StackCreate(BaseModel):
     name: str
+
+class MergeStacksRequest(BaseModel):
+    source_stack: str
+    target_stack: str
+    task_ids: Optional[List[int]] = None  # If provided, only merge selected tasks; otherwise merge all
 
 class AssignmentCreate(BaseModel):
     title: str
@@ -71,7 +73,7 @@ class AssignmentUpdate(BaseModel):
     status: Optional[str] = None
     link: Optional[str] = None
 
-# --- Static Root ---
+# --- UI Root ---
 
 @app.get("/", include_in_schema=False)
 def serve_ui():
@@ -99,7 +101,57 @@ def create_stack(stack: StackCreate):
     except sqlite3.IntegrityError:
         raise HTTPException(status_code=400, detail="A stack with that name already exists.")
 
-# --- Assignments API Endpoints ---
+@app.delete("/stacks/{stack_name}", status_code=status.HTTP_200_OK)
+def delete_stack(stack_name: str, delete_tasks: bool = False):
+    if stack_name.lower() == "all":
+        raise HTTPException(status_code=400, detail="Cannot delete the 'All' default view.")
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM stacks WHERE name = ?", (stack_name,))
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Stack not found.")
+        
+        if delete_tasks:
+            cursor.execute("DELETE FROM assignments WHERE stack_name = ?", (stack_name,))
+            
+        conn.commit()
+        return {"detail": f"Stack '{stack_name}' deleted successfully."}
+
+@app.post("/stacks/merge", status_code=status.HTTP_200_OK)
+def merge_stacks(payload: MergeStacksRequest):
+    """Merges all or selected tasks from source_stack into target_stack."""
+    if payload.source_stack.lower() == "all" or payload.target_stack.lower() == "all":
+        raise HTTPException(status_code=400, detail="Cannot merge to or from the 'All' default stack.")
+    if payload.source_stack == payload.target_stack:
+        raise HTTPException(status_code=400, detail="Source and target stack cannot be the same.")
+
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # Verify target stack exists
+        target = cursor.execute("SELECT id FROM stacks WHERE name = ?", (payload.target_stack,)).fetchone()
+        if not target:
+            raise HTTPException(status_code=404, detail=f"Target stack '{payload.target_stack}' does not exist.")
+
+        if payload.task_ids:
+            # Merge selected tasks
+            placeholders = ",".join(["?"] * len(payload.task_ids))
+            cursor.execute(
+                f"UPDATE assignments SET stack_name = ? WHERE stack_name = ? AND id IN ({placeholders})",
+                [payload.target_stack, payload.source_stack, *payload.task_ids]
+            )
+        else:
+            # Merge all tasks
+            cursor.execute(
+                "UPDATE assignments SET stack_name = ? WHERE stack_name = ?",
+                (payload.target_stack, payload.source_stack)
+            )
+
+        conn.commit()
+        return {"detail": f"Tasks transferred to '{payload.target_stack}' successfully."}
+
+# --- Assignments Endpoints ---
 
 @app.get("/assignments")
 def list_assignments(
