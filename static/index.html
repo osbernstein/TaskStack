@@ -8,44 +8,59 @@
     :root {
       --bg: #f8fafc; --card: #ffffff; --text: #0f172a;
       --muted: #64748b; --border: #e2e8f0; --accent: #2563eb;
-      --done: #10b981; --progress: #f59e0b;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 2rem; display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 800px; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .container { width: 100%; max-width: 820px; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
     h1 { font-size: 1.8rem; font-weight: 700; }
     
-    /* Card / Form Styles */
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    form { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+    /* Navigation / Tabs */
+    .tabs-bar {
+      display: flex; gap: 0.5rem; border-bottom: 2px solid var(--border);
+      margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.2rem;
+    }
+    .tab-btn {
+      background: none; border: none; padding: 0.6rem 1.1rem;
+      font-size: 0.95rem; font-weight: 600; color: var(--muted);
+      cursor: pointer; border-radius: 6px 6px 0 0; position: relative;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active {
+      color: var(--accent);
+    }
+    .tab-btn.active::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 3px; background: var(--accent); border-radius: 2px;
+    }
+
+    /* Cards and Forms */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    form { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem; }
     input, select, button {
       padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; outline: none;
     }
     button.primary { background: var(--accent); color: white; border: none; font-weight: 600; cursor: pointer; }
     button.primary:hover { opacity: 0.9; }
 
-    /* Filters Bar */
-    .filters { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
-    
-    /* Assignment List */
+    /* Task Item */
     .assignment-card {
       background: var(--card); border: 1px solid var(--border); border-radius: 10px;
       padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex;
       justify-content: space-between; align-items: center; transition: all 0.2s;
     }
     .assignment-card:hover { border-color: #cbd5e1; }
-    .meta { display: flex; gap: 0.75rem; font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; align-items: center; }
+    .meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.82rem; color: var(--muted); margin-top: 0.35rem; align-items: center; }
     .tag { background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; color: #334155; }
+    .cat-tag { background: #eff6ff; color: #1d4ed8; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; }
     
-    /* Status Badge */
     .badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 600; text-transform: capitalize; }
     .badge.not_started { background: #f1f5f9; color: #475569; }
     .badge.in_progress { background: #fef3c7; color: #b45309; }
-    .badge.done { background: #dcfce7; color: #15803d; text-decoration: line-through; }
+    .badge.done { background: #dcfce7; color: #15803d; }
 
-    .actions { display: flex; gap: 0.5rem; align-items: center; }
-    .actions button { cursor: pointer; border: 1px solid var(--border); background: white; border-radius: 6px; padding: 0.4rem 0.6rem; }
+    .actions { display: flex; gap: 0.4rem; align-items: center; }
+    .actions button { cursor: pointer; border: 1px solid var(--border); background: white; border-radius: 6px; padding: 0.35rem 0.6rem; }
     .actions button.delete { color: #ef4444; border-color: #fecaca; }
     .actions button.delete:hover { background: #fef2f2; }
   </style>
@@ -57,64 +72,99 @@
       <a href="/docs" target="_blank" style="font-size: 0.9rem; color: var(--accent); text-decoration: none;">API Docs &rarr;</a>
     </header>
 
-    <!-- Create Assignment Form -->
+    <!-- Category Tabs Navigation -->
+    <nav class="tabs-bar" id="tabsBar">
+      <button class="tab-btn active" onclick="switchTab('All')">All Tasks</button>
+      <button class="tab-btn" onclick="switchTab('School')">School</button>
+      <button class="tab-btn" onclick="switchTab('Home Projects')">Home Projects</button>
+      <button class="tab-btn" onclick="switchTab('Personal')">Personal</button>
+    </nav>
+
+    <!-- Create Task Form -->
     <div class="card">
-      <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Add Assignment</h3>
+      <h3 style="margin-bottom: 0.75rem; font-size: 1rem;" id="formTitle">Add Task</h3>
       <form id="addForm">
-        <input type="text" id="title" placeholder="Assignment Title" required />
-        <input type="text" id="course" placeholder="Course (e.g. CS101)" required />
+        <input type="text" id="title" placeholder="Task Name" required />
+        <input type="text" id="course" placeholder="Tag / Class (e.g. CS101 or Garden)" required />
+        
+        <!-- Category Selector -->
+        <select id="category">
+          <option value="School">School</option>
+          <option value="Home Projects">Home Projects</option>
+          <option value="Personal">Personal</option>
+          <option value="Custom">+ New List Name...</option>
+        </select>
+        <input type="text" id="customCategory" placeholder="Enter custom list name" style="display: none;" />
+
         <input type="date" id="due_date" required />
         <input type="time" id="due_time" value="23:59" />
-        <input type="url" id="link" placeholder="LMS Link (optional)" />
+        <input type="url" id="link" placeholder="Link (optional)" />
         <button type="submit" class="primary">Add Task</button>
       </form>
     </div>
 
-    <!-- Filter Controls -->
-    <div class="filters">
-      <input type="text" id="filterCourse" placeholder="Filter by course..." style="flex-grow: 1;" />
-      <select id="filterStatus">
-        <option value="">All Statuses</option>
-        <option value="not_started">Not Started</option>
-        <option value="in_progress">In Progress</option>
-        <option value="done">Done</option>
-      </select>
-      <button onclick="fetchAssignments()">Filter</button>
-    </div>
-
-    <!-- Container for dynamically rendered list -->
+    <!-- Active Tasks Display -->
     <div id="assignmentsList"></div>
   </div>
 
   <script>
+    let activeCategory = 'All';
     const listEl = document.getElementById('assignmentsList');
+    const catSelect = document.getElementById('category');
+    const customCatInput = document.getElementById('customCategory');
+
+    // Handle custom list name input
+    catSelect.addEventListener('change', (e) => {
+      if (e.target.value === 'Custom') {
+        customCatInput.style.display = 'block';
+        customCatInput.required = true;
+      } else {
+        customCatInput.style.display = 'none';
+        customCatInput.required = false;
+      }
+    });
+
+    function switchTab(category) {
+      activeCategory = category;
+      
+      // Update UI active state on tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.trim().toLowerCase() === category.toLowerCase() || (category === 'All' && btn.innerText.includes('All')));
+      });
+
+      // Default the select box to match current tab if not 'All'
+      if (category !== 'All') {
+        catSelect.value = category;
+      }
+
+      fetchAssignments();
+    }
 
     async function fetchAssignments() {
-      const course = document.getElementById('filterCourse').value;
-      const status = document.getElementById('filterStatus').value;
-      
       let url = new URL('/assignments', window.location.origin);
-      if (course) url.searchParams.append('course', course);
-      if (status) url.searchParams.append('status', status);
+      if (activeCategory !== 'All') {
+        url.searchParams.append('category', activeCategory);
+      }
 
       const res = await fetch(url);
       const data = await res.json();
       render(data);
     }
 
-    function render(assignments) {
-      if (assignments.length === 0) {
-        listEl.innerHTML = '<p style="color: var(--muted); text-align: center; margin-top: 2rem;">No assignments found.</p>';
+    function render(tasks) {
+      if (tasks.length === 0) {
+        listEl.innerHTML = `<p style="color: var(--muted); text-align: center; margin-top: 3rem;">No tasks found in "${activeCategory}".</p>`;
         return;
       }
 
-      listEl.innerHTML = assignments.map(task => `
+      listEl.innerHTML = tasks.map(task => `
         <div class="assignment-card">
           <div>
             <div style="font-weight: 600; font-size: 1.05rem; ${task.status === 'done' ? 'text-decoration: line-through; opacity: 0.6;' : ''}">
               ${task.title}
             </div>
             <div class="meta">
+              <span class="cat-tag">${task.category}</span>
               <span class="tag">${task.course}</span>
               <span>Due: ${task.due_date} ${task.due_time || ''}</span>
               ${task.link ? `<a href="${task.link}" target="_blank" style="color: var(--accent);">Link</a>` : ''}
@@ -132,9 +182,16 @@
 
     document.getElementById('addForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      let selectedCategory = catSelect.value;
+      if (selectedCategory === 'Custom') {
+        selectedCategory = customCatInput.value.trim() || 'General';
+      }
+
       const payload = {
         title: document.getElementById('title').value,
         course: document.getElementById('course').value,
+        category: selectedCategory,
         due_date: document.getElementById('due_date').value,
         due_time: document.getElementById('due_time').value || null,
         link: document.getElementById('link').value || null,
@@ -147,7 +204,11 @@
         body: JSON.stringify(payload)
       });
 
+      // Reset form
       e.target.reset();
+      customCatInput.style.display = 'none';
+      if (activeCategory !== 'All') catSelect.value = activeCategory;
+
       fetchAssignments();
     });
 
@@ -161,13 +222,12 @@
     }
 
     async function deleteTask(id) {
-      if (confirm('Delete this assignment?')) {
+      if (confirm('Delete this task?')) {
         await fetch(`/assignments/${id}`, { method: 'DELETE' });
         fetchAssignments();
       }
     }
 
-    // Initial load
     fetchAssignments();
   </script>
 </body>
