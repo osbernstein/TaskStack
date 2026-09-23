@@ -2,6 +2,7 @@ import sqlite3
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Query, status
 from pydantic import BaseModel, HttpUrl
+from fastapi.responses import FileResponse
 
 app = FastAPI(title="Assignment Tracker API", version="1.0.0")
 
@@ -50,6 +51,10 @@ class AssignmentUpdate(BaseModel):
     link: Optional[str] = None
 
 # --- API Endpoints ---
+@app.get("/", include_in_schema=False)
+def serve_ui():
+    return FileResponse("static/index.html")
+
 @app.get("/assignments")
 def list_assignments(
     course: Optional[str] = Query(None, description="Filter by course"),
