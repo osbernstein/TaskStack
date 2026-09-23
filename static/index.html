@@ -5,74 +5,272 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TaskStack</title>
   <style>
+    /* Theme color variables */
     :root {
-      --bg: #f8fafc; --card: #ffffff; --text: #0f172a;
-      --muted: #64748b; --border: #e2e8f0; --accent: #2563eb;
+      --bg-outer: #0284c7;
+      --bg-inner: #0f172a;
+      --circle-core: #f472b6;
+      --circle-glow: #a855f7;
+      --text: #f8fafc;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --input-bg: rgba(30, 41, 59, 0.8);
     }
+
+    [data-theme="sunset"] {
+      --bg-outer: #ea580c;
+      --bg-inner: #31102f;
+      --circle-core: #fbbf24;
+      --circle-glow: #e11d48;
+    }
+
+    [data-theme="emerald"] {
+      --bg-outer: #0284c7;
+      --bg-inner: #064e3b;
+      --circle-core: #34d399;
+      --circle-glow: #059669;
+    }
+
+    [data-theme="midnight"] {
+      --bg-outer: #3b82f6;
+      --bg-inner: #090d16;
+      --circle-core: #818cf8;
+      --circle-glow: #4f46e5;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 3rem 1.5rem; display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 760px; }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at center, var(--bg-inner) 0%, var(--bg-outer) 100%);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1.5rem;
+      transition: background 0.4s ease;
+      overflow-x: hidden;
+    }
+
+    .container { width: 100%; max-width: 860px; position: relative; }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .settings-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .settings-btn:hover { background: rgba(255, 255, 255, 0.22); }
+
+    .settings-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: 12px;
+      padding: 0.8rem;
+      width: 190px;
+      z-index: 50;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .settings-dropdown h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; opacity: 0.7; }
+    .theme-option {
+      padding: 0.5rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .theme-option:hover { background: rgba(255, 255, 255, 0.1); }
+    .color-dot { width: 12px; height: 12px; border-radius: 50%; }
 
     /* Centered Header */
-    header { text-align: center; margin-bottom: 3.5rem; }
-    .title-logo { font-size: 2.4rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; }
-
-    /* Home Navigation Boxes */
-    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
-    .nav-box {
-      background: var(--card); border: 2px solid var(--border); border-radius: 16px;
-      padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s ease;
-      position: relative; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+    header { text-align: center; margin: 2rem 0 4rem; }
+    .title-logo {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
     }
-    .nav-box:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .nav-box h2 { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.05em; }
 
-    /* Dropdown inside My Stacks */
-    .dropdown-menu {
-      display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); z-index: 20; max-height: 260px; overflow-y: auto; text-align: left;
+    /* Circle Selection Hub */
+    .home-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4rem;
+      margin-top: 1rem;
     }
-    .dropdown-item { padding: 0.75rem 1.2rem; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-weight: 500; }
-    .dropdown-item:hover { background: #f8fafc; color: var(--accent); }
-    .dropdown-add { padding: 0.75rem 1.2rem; display: flex; gap: 0.5rem; background: #fafafa; border-radius: 0 0 12px 12px; }
 
-    /* Panels (Create Task / Task List) */
-    .view-panel { display: none; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; }
-    .back-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.9rem; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.3rem; }
-    .back-btn:hover { color: var(--text); }
+    .circle-portal {
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, var(--circle-core) 0%, var(--circle-glow) 50%, var(--bg-inner) 95%);
+      box-shadow: 0 0 45px rgba(0, 0, 0, 0.6), inset 0 0 25px rgba(255, 255, 255, 0.25);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      text-align: center;
+      user-select: none;
+    }
 
-    /* Forms */
+    .circle-portal:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 65px var(--circle-glow), inset 0 0 35px rgba(255, 255, 255, 0.4);
+    }
+
+    .circle-portal h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      pointer-events: none;
+    }
+
+    /* Stacks Dropdown attached to the left circle */
+    .stacks-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 15px);
+      width: 260px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: 14px;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+      z-index: 40;
+      max-height: 250px;
+      overflow-y: auto;
+      text-align: left;
+    }
+    .dropdown-item { padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.9rem; }
+    .dropdown-item:hover { background: rgba(255, 255, 255, 0.12); }
+    .dropdown-add { padding: 0.6rem 0.8rem; display: flex; gap: 0.4rem; background: rgba(0,0,0,0.25); border-radius: 0 0 14px 14px; }
+
+    /* Shared Glass Panels for Create Task & List Views */
+    .view-panel {
+      display: none;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2.2rem;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      margin-top: 1rem;
+    }
+
+    .back-btn {
+      background: none; border: none; color: #cbd5e1; cursor: pointer;
+      font-size: 0.9rem; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .back-btn:hover { color: #ffffff; }
+
     form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .full-width { grid-column: 1 / -1; }
-    input, select, button { padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem; outline: none; }
-    button.primary { background: var(--accent); color: white; border: none; font-weight: 600; cursor: pointer; }
-
-    /* Assignment Items */
-    .task-card {
-      background: #fdfdfd; border: 1px solid var(--border); border-radius: 10px;
-      padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex;
-      justify-content: space-between; align-items: center;
+    input, select, button {
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      font-size: 0.95rem;
+      outline: none;
+      background: var(--input-bg);
+      color: #ffffff;
     }
-    .meta { display: flex; gap: 0.5rem; font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; align-items: center; }
-    .tag { background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; }
-    .badge { font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 9999px; font-weight: 600; }
-    .badge.not_started { background: #f1f5f9; color: #475569; }
-    .badge.done { background: #dcfce7; color: #15803d; }
-    .actions button { cursor: pointer; border: 1px solid var(--border); background: white; border-radius: 6px; padding: 0.3rem 0.5rem; }
+    input::placeholder { color: #94a3b8; }
+    button.primary {
+      background: var(--circle-glow);
+      color: white;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button.primary:hover { opacity: 0.9; }
+
+    /* Task Card Item */
+    .task-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.1rem 1.3rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .meta { display: flex; gap: 0.6rem; font-size: 0.82rem; color: #cbd5e1; margin-top: 0.35rem; align-items: center; }
+    .tag { background: rgba(255, 255, 255, 0.12); padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 600; }
+    .badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 600; }
+    .badge.not_started { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+    .badge.done { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .actions button { cursor: pointer; border: 1px solid var(--card-border); background: rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 0.35rem 0.65rem; }
+
+    @media (max-width: 650px) {
+      .home-grid { flex-direction: column; gap: 2.5rem; }
+      .circle-portal { width: 210px; height: 210px; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Top Bar with Settings Dropdown -->
+    <div class="top-bar">
+      <button class="settings-btn" onclick="toggleSettings(event)">&#9881; Settings</button>
+      <div class="settings-dropdown" id="settingsDropdown">
+        <h4>Color Scheme</h4>
+        <div class="theme-option" onclick="applyTheme('default')">
+          <span class="color-dot" style="background: #f472b6;"></span> Cyber Glow
+        </div>
+        <div class="theme-option" onclick="applyTheme('sunset')">
+          <span class="color-dot" style="background: #ea580c;"></span> Sunset Radiant
+        </div>
+        <div class="theme-option" onclick="applyTheme('emerald')">
+          <span class="color-dot" style="background: #059669;"></span> Deep Emerald
+        </div>
+        <div class="theme-option" onclick="applyTheme('midnight')">
+          <span class="color-dot" style="background: #4f46e5;"></span> Midnight Indigo
+        </div>
+      </div>
+    </div>
+
+    <!-- Centered Header -->
     <header>
       <div class="title-logo">TASKSTACK</div>
     </header>
 
-    <!-- Default Landing Options -->
+    <!-- Main Navigation Hub (Two Centered Gradient Circles) -->
     <div class="home-grid" id="homeView">
-      <div class="nav-box" id="myStacksBtn" onclick="toggleDropdown(event)">
+      <!-- Left Circle: My Stacks -->
+      <div class="circle-portal" id="myStacksCircle" onclick="toggleStacks(event)">
         <h2>MY STACKS</h2>
-        <div class="dropdown-menu" id="stacksDropdown">
+        <div class="stacks-menu" id="stacksDropdown">
           <div class="dropdown-item" onclick="openStackView('All')">All Tasks</div>
           <div id="dynamicStacks"></div>
           <div class="dropdown-add" onclick="event.stopPropagation()">
@@ -82,7 +280,8 @@
         </div>
       </div>
 
-      <div class="nav-box" onclick="showCreateTaskView()">
+      <!-- Right Circle: Create Task -->
+      <div class="circle-portal" onclick="showCreateTaskView()">
         <h2>CREATE TASK</h2>
       </div>
     </div>
@@ -93,11 +292,9 @@
       <h3 style="margin-bottom: 1.5rem;">Create New Task</h3>
       <form id="createTaskForm">
         <input type="text" id="title" class="full-width" placeholder="Task Name" required />
-        <input type="text" id="course" placeholder="Tag / Context (e.g. CS101, Chores)" required />
+        <input type="text" id="course" placeholder="Tag / Course (e.g. CS101, Chores)" required />
         
-        <select id="stackSelect" required>
-          <!-- Populated from DB -->
-        </select>
+        <select id="stackSelect" required></select>
 
         <input type="date" id="due_date" required />
         <input type="time" id="due_time" value="23:59" />
@@ -122,17 +319,49 @@
     let stacks = [];
     let activeStack = 'All';
 
+    // Theme Management
+    function applyTheme(name) {
+      if (name === 'default') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', name);
+      }
+      localStorage.setItem('taskstack-theme', name);
+      document.getElementById('settingsDropdown').style.display = 'none';
+    }
+
+    const savedTheme = localStorage.getItem('taskstack-theme');
+    if (savedTheme) applyTheme(savedTheme);
+
+    function toggleSettings(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('settingsDropdown');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      document.getElementById('stacksDropdown').style.display = 'none';
+    }
+
+    function toggleStacks(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('stacksDropdown');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      document.getElementById('settingsDropdown').style.display = 'none';
+    }
+
+    window.onclick = () => {
+      document.getElementById('settingsDropdown').style.display = 'none';
+      document.getElementById('stacksDropdown').style.display = 'none';
+    };
+
+    // Stacks API Integration
     async function loadStacks() {
       const res = await fetch('/stacks');
       stacks = await res.json();
       
-      // Update dropdown list
       const dynamicList = document.getElementById('dynamicStacks');
       dynamicList.innerHTML = stacks.map(s => `
         <div class="dropdown-item" onclick="openStackView('${s.name}')">${s.name}</div>
       `).join('');
 
-      // Update stack select options in Create Task form
       const select = document.getElementById('stackSelect');
       if (stacks.length === 0) {
         select.innerHTML = `<option value="General">General</option>`;
@@ -140,16 +369,6 @@
         select.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
       }
     }
-
-    function toggleDropdown(e) {
-      e.stopPropagation();
-      const dd = document.getElementById('stacksDropdown');
-      dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-    }
-
-    window.onclick = () => {
-      document.getElementById('stacksDropdown').style.display = 'none';
-    };
 
     async function createStack() {
       const input = document.getElementById('newStackInput');
@@ -172,8 +391,9 @@
       }
     }
 
+    // View Navigation
     function showHomeView() {
-      document.getElementById('homeView').style.display = 'grid';
+      document.getElementById('homeView').style.display = 'flex';
       document.getElementById('createView').style.display = 'none';
       document.getElementById('listView').style.display = 'none';
     }
@@ -208,25 +428,25 @@
       const container = document.getElementById('tasksContainer');
 
       if (tasks.length === 0) {
-        container.innerHTML = `<p style="color: var(--muted); text-align: center; margin: 2rem 0;">No tasks found in this stack.</p>`;
+        container.innerHTML = `<p style="color: #94a3b8; text-align: center; margin: 2rem 0;">No tasks found in this stack.</p>`;
         return;
       }
 
       container.innerHTML = tasks.map(t => `
         <div class="task-card">
           <div>
-            <div style="font-weight: 600; ${t.status === 'done' ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${t.title}</div>
+            <div style="font-weight: 600; ${t.status === 'done' ? 'text-decoration: line-through; opacity: 0.5;' : ''}">${t.title}</div>
             <div class="meta">
               <span class="tag">${t.stack_name}</span>
               <span class="tag">${t.course}</span>
               <span>Due: ${t.due_date} ${t.due_time || ''}</span>
-              ${t.link ? `<a href="${t.link}" target="_blank" style="color: var(--accent);">Link</a>` : ''}
+              ${t.link ? `<a href="${t.link}" target="_blank" style="color: #60a5fa;">Link</a>` : ''}
               <span class="badge ${t.status}">${t.status.replace('_', ' ')}</span>
             </div>
           </div>
           <div class="actions">
             ${t.status !== 'done' ? `<button onclick="updateStatus(${t.id}, 'done')">&#10003;</button>` : ''}
-            <button onclick="deleteTask(${t.id})" style="color: #ef4444;">&times;</button>
+            <button onclick="deleteTask(${t.id})" style="color: #f87171;">&times;</button>
           </div>
         </div>
       `).join('');
@@ -270,7 +490,7 @@
       }
     }
 
-    // Initialize
+    // Initial load
     loadStacks();
   </script>
 </body>
