@@ -63,7 +63,7 @@
       backdrop-filter: blur(16px);
       border-radius: 14px;
       padding: 0.5rem;
-      width: 180px;
+      width: 190px;
       z-index: 50;
       box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
@@ -80,7 +80,7 @@
     }
     .menu-item:hover { background: rgba(0, 0, 0, 0.05); }
 
-    /* Centered Header */
+    /* Header */
     header { text-align: center; margin: 1.5rem 0 3.5rem; }
     .title-logo {
       font-size: 3.5rem;
@@ -91,7 +91,7 @@
       text-shadow: 0 2px 15px rgba(255, 255, 255, 0.8);
     }
 
-    /* Portal Circles (0.8x scaled) */
+    /* Portal Circles */
     .home-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -120,29 +120,21 @@
       text-align: center;
       user-select: none;
     }
-
     .circle-portal:hover {
       transform: scale(1.05);
-      box-shadow: 0 35px 80px rgba(0, 0, 0, 0.08), 0 0 100px rgba(255, 255, 255, 1), inset 0 0 60px rgba(255, 255, 255, 0.95);
+      box-shadow: 0 35px 80px rgba(0, 0, 0, 0.08), 0 0 100px rgba(255, 255, 255, 1);
     }
-
     .circle-portal h2 {
       font-size: 1.85rem;
       font-weight: 900;
       letter-spacing: 0.12em;
       color: var(--text);
-      text-shadow: 0 2px 10px rgba(255, 255, 255, 0.85);
       pointer-events: none;
     }
 
-    @media (max-width: 1080px) {
-      .circle-portal { width: 310px; height: 310px; }
-      .circle-portal h2 { font-size: 1.5rem; }
-    }
-
     @media (max-width: 820px) {
-      .home-grid { grid-template-columns: 1fr; gap: 3rem; margin-top: 2rem; }
-      .circle-portal { width: 260px; height: 260px; }
+      .home-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .circle-portal { width: 270px; height: 270px; }
       .circle-portal h2 { font-size: 1.35rem; }
     }
 
@@ -153,24 +145,25 @@
       border: 1px solid var(--card-border);
       backdrop-filter: blur(20px);
       border-radius: 20px;
-      padding: 2.5rem;
+      padding: 2.2rem;
       box-shadow: 0 15px 40px rgba(0,0,0,0.05);
-      max-width: 820px;
+      max-width: 1060px;
       margin: 1rem auto 0;
     }
 
     .back-btn {
       background: none; border: none; color: var(--text-muted); cursor: pointer;
-      font-size: 0.95rem; font-weight: 600; margin-bottom: 1.8rem; display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.95rem; font-weight: 600; margin-bottom: 1.2rem; display: inline-flex; align-items: center; gap: 0.4rem;
     }
     .back-btn:hover { color: var(--text); }
 
+    /* Stacks View */
     .create-stack-box {
       background: rgba(255, 255, 255, 0.6);
       border: 1px solid var(--card-border);
       border-radius: 14px;
       padding: 1.5rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
 
     .stacks-grid {
@@ -197,18 +190,161 @@
       background: rgba(255, 255, 255, 0.95);
     }
 
+    /* Clean Pinned Header Layout */
+    .list-header-clean {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-bottom: 0.9rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .header-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    /* Standardized uniform button/select height */
+    .header-controls-row select,
+    .header-controls-row button {
+      height: 38px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 9px;
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    /* Two-Column Stack Workspace */
+    .stack-workspace {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      margin-top: 1.2rem;
+    }
+
+    @media (max-width: 860px) {
+      .stack-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Column: Tags Panel */
+    .tags-sidebar {
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .tags-sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .tags-sidebar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      max-height: 48vh;
+      overflow-y: auto;
+      padding-right: 0.2rem;
+    }
+
+    .tag-row-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.35rem 0.65rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .tag-pill-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      font-size: 0.85rem;
+      line-height: 1;
+      opacity: 0.7;
+      padding: 0 0.1rem;
+    }
+    .tag-pill-btn:hover { opacity: 1; }
+
+    .btn-add-tag-pill {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px dashed var(--card-border);
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text);
+    }
+    .btn-add-tag-pill:hover { background: rgba(255, 255, 255, 0.95); border-color: var(--accent); }
+
+    /* Right Column: Scrollable Task Container */
+    .tasks-scroll-container {
+      max-height: 58vh;
+      overflow-y: auto;
+      padding-right: 0.4rem;
+    }
+
+    .tasks-scroll-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .tasks-scroll-container::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 4px;
+    }
+
+    /* Batch Edit Bar */
+    .batch-bar {
+      display: none;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      margin-top: 0.6rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    /* Form Controls */
     #createTaskForm { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .full-width { grid-column: 1 / -1; }
+
     input, select, button {
-      padding: 0.85rem 1rem;
+      padding: 0.75rem 0.9rem;
       border-radius: 10px;
       border: 1px solid var(--card-border);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       outline: none;
       background: var(--input-bg);
       color: var(--text);
     }
-    input::placeholder { color: var(--text-muted); opacity: 0.7; }
     button.primary {
       background: var(--accent);
       color: #ffffff;
@@ -216,67 +352,73 @@
       font-weight: 700;
       cursor: pointer;
     }
-    button.primary:hover { opacity: 0.9; }
+    button.secondary {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--card-border);
+      font-weight: 600;
+      cursor: pointer;
+    }
 
-    /* Task Card Item */
+    /* Task Card */
     .task-card {
       background: rgba(255, 255, 255, 0.7);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 1.1rem 1.3rem;
-      margin-bottom: 0.8rem;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.75rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-    }
-    .meta { display: flex; gap: 0.6rem; font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem; align-items: center; }
-    .tag {
-      padding: 0.25rem 0.65rem;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 0.78rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      transition: filter 0.15s ease, transform 0.15s ease;
-      border: 1px solid transparent;
-    }
-    .tag:hover {
-      filter: brightness(0.95);
-      transform: translateY(-1px);
-    }
-    
-    .actions {
-      display: flex;
-      gap: 0.6rem;
-      align-items: center;
+      gap: 0.8rem;
     }
 
+    .task-checkbox {
+      display: none;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .meta { display: flex; gap: 0.6rem; font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem; align-items: center; }
+
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.76rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      user-select: none;
+      transition: filter 0.15s;
+    }
+    .tag-badge:hover { filter: brightness(0.92); }
+
+    .tag-select-inline {
+      padding: 0.2rem 0.4rem;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+    }
+
+    .actions { display: flex; gap: 0.5rem; align-items: center; margin-left: auto; }
+
     .status-select {
-      padding: 0.35rem 0.6rem;
+      height: 32px;
+      box-sizing: border-box;
+      padding: 0 0.65rem;
       border-radius: 8px;
       font-size: 0.8rem;
       font-weight: 600;
       border: 1px solid var(--card-border);
       cursor: pointer;
-      outline: none;
-      transition: all 0.2s;
     }
-
-    .status-select.not_started {
-      background: rgba(255, 255, 255, 0.85);
-      color: #475569;
-    }
-    .status-select.in_progress {
-      background: #fef3c7;
-      color: #b45309;
-      border-color: #fde68a;
-    }
-    .status-select.done {
-      background: #dcfce7;
-      color: #15803d;
-      border-color: #bbf7d0;
-    }
+    .status-select.not_started { background: rgba(255, 255, 255, 0.85); color: #475569; }
+    .status-select.in_progress { background: #fef3c7; color: #b45309; }
+    .status-select.done { background: #dcfce7; color: #15803d; }
 
     .btn-delete {
       background: rgba(239, 68, 68, 0.1);
@@ -287,14 +429,9 @@
       line-height: 1;
       padding: 0.35rem 0.65rem;
       cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-delete:hover {
-      background: #ef4444;
-      color: white;
     }
 
-    /* Modals for Settings */
+    /* Modals */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -315,52 +452,86 @@
       max-width: 480px;
       box-shadow: 0 20px 45px rgba(0,0,0,0.15);
     }
-    .modal-card h3 { margin-bottom: 1.25rem; font-size: 1.25rem; }
-    .modal-card .form-group { margin-bottom: 1.2rem; }
-    .modal-card label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted); }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 0.8rem; margin-top: 1.5rem; }
-    .btn-secondary { background: rgba(255, 255, 255, 0.8); border: 1px solid var(--card-border); cursor: pointer; }
-    .btn-danger { background: #ef4444; color: white; border: none; font-weight: 600; cursor: pointer; }
+    .modal-card h3 { margin-bottom: 1.2rem; }
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 0.8rem; margin-top: 1.4rem; }
 
-    /* Custom Color Wheel Styling */
-    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
-
-    .preset-dot {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 2px solid white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: transform 0.15s ease;
-    }
-    .preset-dot:hover { transform: scale(1.25); }
-
-    .tasks-checklist {
-      max-height: 180px;
-      overflow-y: auto;
-      background: rgba(255, 255, 255, 0.6);
-      border: 1px solid var(--card-border);
+    .due-badge {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.45rem;
+      height: 32px;
+      box-sizing: border-box;
+      padding: 0 0.75rem;
       border-radius: 8px;
-      padding: 0.6rem 0.8rem;
+      background: rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--card-border);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      user-select: none;
     }
-    .check-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.88rem; }
+
+    .due-badge.no-date {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-style: italic;
+      font-size: 0.75rem;
+    }
+
+    .due-badge .due-time-inline {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Due within 24 hours */
+    .due-soon {
+      color: #dc2626 !important;
+      font-weight: 800 !important;
+      border-color: rgba(220, 38, 38, 0.45) !important;
+      background: rgba(254, 226, 226, 0.55) !important;
+    }
+
+    .due-soon-text {
+      color: #dc2626 !important;
+      font-weight: 700 !important;
+    }
+
+    /* Overdue badge */
+    .badge-late {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      background: #dc2626;
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      line-height: 1;
+      vertical-align: middle;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Top Bar with Settings Menu -->
+    <!-- Top Bar -->
     <div class="top-bar">
       <button class="settings-btn" onclick="toggleSettings(event)">&#9881; Settings</button>
       <div class="settings-dropdown" id="settingsDropdown">
         <div class="menu-item" onclick="openDeleteModal()">Delete Stack &rarr;</div>
         <div class="menu-item" onclick="openMergeModal()">Merge Stacks &rarr;</div>
         <div class="menu-item" onclick="openColorModal()">Color &rarr;</div>
+        <div class="menu-item" onclick="openCanvasModal()">Sync Canvas &rarr;</div>
       </div>
     </div>
 
-    <!-- Centered Header -->
     <header>
       <div class="title-logo">TASKSTACK</div>
     </header>
@@ -381,16 +552,17 @@
       
       <div class="create-stack-box">
         <h3 style="margin-bottom: 0.8rem; font-size: 1.1rem;">Create New Stack</h3>
-        <form id="createStackForm" onsubmit="handleCreateStack(event)" style="display: flex; gap: 0.75rem;">
-          <input type="text" id="newStackInput" placeholder="Stack Name (e.g. Work, Errands)" style="flex-grow: 1;" required />
-          <button type="submit" class="primary" style="padding: 0 1.8rem;">Create Stack</button>
+        <form id="createStackForm" onsubmit="handleCreateStack(event)" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; gap: 0.75rem;">
+            <input type="text" id="newStackInput" placeholder="Stack Name (e.g. Fall 2026)" style="flex: 1;" required />
+            <button type="submit" class="primary" style="padding: 0 1.8rem;">Create Stack</button>
+          </div>
+          <input type="text" id="newStackTagsInput" placeholder="Initial class tags (comma separated: CS 211, Econ 201, Math 230)" />
         </form>
       </div>
 
       <h3 style="margin-bottom: 1.25rem; font-size: 1.1rem;">Choose a Stack</h3>
-      <div class="stacks-grid" id="stacksListGrid">
-        <div class="stack-card" onclick="openStackView('All')">All Tasks</div>
-      </div>
+      <div class="stacks-grid" id="stacksListGrid"></div>
     </div>
 
     <!-- Create Task View -->
@@ -399,8 +571,14 @@
       <h3 style="margin-bottom: 1.5rem;">Create New Task</h3>
       <form id="createTaskForm">
         <input type="text" id="title" class="full-width" placeholder="Task Name" required />
-        <input type="text" id="course" placeholder="Tag / Context (e.g. CS101, Chores)" required />
-        <select id="stackSelect" required></select>
+        
+        <select id="stackSelect" onchange="updateTagChoicesForTaskForm()" required></select>
+
+        <div style="display: flex; gap: 0.5rem;">
+          <select id="courseTagSelect" style="flex: 1;"></select>
+          <input type="text" id="customCourseTagInput" placeholder="Or new tag..." style="flex: 1;" />
+        </div>
+
         <input type="date" id="due_date" required />
         <input type="time" id="due_time" value="23:59" />
         <input type="url" id="link" class="full-width" placeholder="Link (optional)" />
@@ -408,14 +586,132 @@
       </form>
     </div>
 
-    <!-- Task List View -->
+    <!-- Task List View (Clean Header + Left Tag Sidebar + Right Scrollable Tasks) -->
     <div class="view-panel" id="listView">
       <button class="back-btn" onclick="showStacksView()">&larr; Back to Stacks</button>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 id="currentStackHeading">All Tasks</h3>
-        <button class="primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="showCreateTaskView()">+ New Task</button>
+
+      <!-- Clean Header Layout: STACK NAME on top, controls aligned below -->
+      <div class="list-header-clean">
+        <h2 id="currentStackHeading" style="font-size: 2rem; font-weight: 900; letter-spacing: -0.01em;">All Tasks</h2>
+        
+        <div class="header-controls-row">
+          <!-- Filter / Sort Dropdown -->
+          <select id="sortCriterionSelect" onchange="handleSortFilterChange(this.value)">
+            <option value="" disabled selected hidden>Filter</option>
+            <option value="default">Default</option>
+
+            <optgroup label="Filter by Tag" id="filterByTagOptgroup">
+              <option value="filter:tag:all">Show All Tags</option>
+            </optgroup>
+
+            <optgroup label="Filter by Status">
+              <option value="filter:status:not_started">Not Started</option>
+              <option value="filter:status:in_progress">In Progress</option>
+              <option value="filter:status:done">Done</option>
+            </optgroup>
+
+            <optgroup label="Sort Options">
+              <option value="sort:pure_due_date">Sort by Due Date</option>
+              <option value="sort:course">Sort by Tag</option>
+              <option value="sort:status">Sort by Status</option>
+            </optgroup>
+          </select>
+
+          <button class="secondary" id="btnToggleEdit" onclick="toggleEditMode()">Edit</button>
+          <button class="primary" onclick="showCreateTaskView()">+ New Task</button>
+        </div>
+
+        <!-- Multi-Select Batch Bar (Revealed in Edit Mode) -->
+        <div class="batch-bar" id="batchActionBar">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" />
+              <label for="selectAllCheckbox" style="font-size: 0.82rem; font-weight: 600; cursor: pointer;">Select All</label>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <label for="filterSelectByTag" style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted);">Select by Tag:</label>
+              <select id="filterSelectByTag" onchange="selectTasksByTag(this.value)" style="padding: 0.25rem 0.5rem; font-size: 0.78rem;"></select>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <select id="batchStatusSelect" style="padding: 0.35rem 0.6rem; font-size: 0.8rem;">
+              <option value="">Set Status...</option>
+              <option value="not_started">Not Started</option>
+              <option value="in_progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+            <button class="secondary" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" onclick="applyBatchStatus()">Apply</button>
+
+            <select id="batchTagSelect" style="padding: 0.35rem 0.6rem; font-size: 0.8rem;"></select>
+            <button class="secondary" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" onclick="applyBatchTag()">Set Tag</button>
+
+            <button class="secondary" style="color: #ef4444; padding: 0.35rem 0.65rem; font-size: 0.8rem;" onclick="deleteSelectedTasks()">Delete</button>
+          </div>
+        </div>
       </div>
-      <div id="tasksContainer"></div>
+
+      <!-- 2-Column Split: Tags Table Sidebar (Left) + Tasks Area (Right) -->
+      <div class="stack-workspace">
+        
+        <!-- Left Column: Tags Panel -->
+        <div class="tags-sidebar">
+          <div class="tags-sidebar-header">
+            <span>Tags</span>
+            <button class="btn-add-tag-pill" onclick="promptAddNewTag()" id="sidebarAddTagBtn">+ Add</button>
+          </div>
+          <div class="tags-sidebar-list" id="sidebarTagsList"></div>
+        </div>
+
+        <!-- Right Column: Independently Scrollable Tasks Container -->
+        <div class="tasks-scroll-container" id="tasksContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Add Tag with Custom Color -->
+  <div class="modal-overlay" id="addTagModal">
+    <div class="modal-card">
+      <h3 id="addTagModalHeading">Add Tag to Stack</h3>
+      <div style="display: flex; flex-direction: column; gap: 1rem; margin: 1.2rem 0; text-align: left;">
+        <div class="form-group">
+          <label>Tag Name:</label>
+          <input type="text" id="newTagNameInput" placeholder="e.g. CS 211, Chores" style="width: 100%;" required />
+        </div>
+        <div class="form-group" style="display: flex; align-items: center; justify-content: space-between;">
+          <label style="margin: 0;">Tag Color:</label>
+          <input type="color" id="newTagColorPicker" value="#0284c7" 
+                 style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--card-border); cursor: pointer; padding: 0; background: none;" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="secondary" onclick="closeModals()">Cancel</button>
+        <button class="primary" onclick="submitAddNewTagWithColor()">Create Tag</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Sync Canvas -->
+  <div class="modal-overlay" id="canvasModal">
+    <div class="modal-card">
+      <h3>Sync Canvas Calendar</h3>
+      <div class="form-group">
+        <label>Canvas iCal Feed URL:</label>
+        <input type="url" id="canvasFeedUrl" placeholder="https://school.instructure.com/feeds/calendars/user_..." style="width: 100%;" required />
+        <span style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+          In Canvas: Calendar &rarr; Calendar Feed (bottom right) &rarr; Copy Link.
+        </span>
+      </div>
+      <div class="form-group">
+        <label>Import into Stack:</label>
+        <select id="canvasStackSelect" style="width: 100%;"></select>
+      </div>
+      <div id="canvasSyncStatus" style="font-size: 0.85rem; color: var(--accent); margin-bottom: 0.8rem; display: none;"></div>
+      <div class="modal-actions">
+        <button class="secondary" onclick="closeModals()">Cancel</button>
+        <button class="primary" id="btnSyncCanvas" onclick="submitCanvasSync()">Sync Now</button>
+      </div>
     </div>
   </div>
 
@@ -428,14 +724,13 @@
         <select id="deleteStackSelect" style="width: 100%;"></select>
       </div>
       <div class="form-group">
-        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text);">
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
           <input type="checkbox" id="deleteTasksCheckbox" /> Also delete all tasks inside this stack
         </label>
-        <span style="font-size: 0.78rem; color: var(--text-muted);">If unchecked, tasks are safely moved to the "General" stack.</span>
       </div>
       <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeModals()">Cancel</button>
-        <button class="btn-danger" onclick="confirmDeleteStack()">Delete</button>
+        <button class="secondary" onclick="closeModals()">Cancel</button>
+        <button class="primary" style="background: #ef4444;" onclick="confirmDeleteStack()">Delete</button>
       </div>
     </div>
   </div>
@@ -446,20 +741,14 @@
       <h3>Merge Stacks</h3>
       <div class="form-group">
         <label>Transfer tasks FROM:</label>
-        <select id="mergeSourceSelect" style="width: 100%;" onchange="loadSourceTasksForMerge()"></select>
+        <select id="mergeSourceSelect" style="width: 100%;"></select>
       </div>
       <div class="form-group">
         <label>Transfer tasks INTO:</label>
         <select id="mergeTargetSelect" style="width: 100%;"></select>
       </div>
-      <div class="form-group">
-        <label>Choose tasks to transfer (leave all unchecked to merge entire stack):</label>
-        <div class="tasks-checklist" id="mergeTasksChecklist">
-          <p style="color: var(--text-muted); font-size: 0.82rem;">Select a source stack to view tasks.</p>
-        </div>
-      </div>
       <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeModals()">Cancel</button>
+        <button class="secondary" onclick="closeModals()">Cancel</button>
         <button class="primary" onclick="confirmMergeStacks()">Merge</button>
       </div>
     </div>
@@ -468,82 +757,34 @@
   <!-- MODAL: Color Theme -->
   <div class="modal-overlay" id="colorModal">
     <div class="modal-card" style="text-align: center;">
-      <h3>Choose Theme Color</h3>
-      
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 1.2rem; margin: 1.5rem 0;">
-        <div style="position: relative; display: inline-block;">
-          <input type="color" id="customColorPicker" value="#0284c7" oninput="handleColorWheelInput(this.value)" 
-                 style="width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--card-border); cursor: pointer; padding: 0; background: none;" />
-        </div>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">Click the circle above to open the full color wheel.</p>
-
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
-          <button type="button" class="preset-dot" style="background: #0284c7;" onclick="setColorFromHex('#0284c7')" title="Blue"></button>
-          <button type="button" class="preset-dot" style="background: #e11d48;" onclick="setColorFromHex('#e11d48')" title="Red"></button>
-          <button type="button" class="preset-dot" style="background: #ea580c;" onclick="setColorFromHex('#ea580c')" title="Orange"></button>
-          <button type="button" class="preset-dot" style="background: #ca8a04;" onclick="setColorFromHex('#ca8a04')" title="Yellow"></button>
-          <button type="button" class="preset-dot" style="background: #16a34a;" onclick="setColorFromHex('#16a34a')" title="Green"></button>
-          <button type="button" class="preset-dot" style="background: #4f46e5;" onclick="setColorFromHex('#4f46e5')" title="Indigo"></button>
-          <button type="button" class="preset-dot" style="background: #7c3aed;" onclick="setColorFromHex('#7c3aed')" title="Violet"></button>
-          <button type="button" class="preset-dot" style="background: #db2777;" onclick="setColorFromHex('#db2777')" title="Pink"></button>
-          <button type="button" class="preset-dot" style="background: #475569;" onclick="setColorFromHex('#475569')" title="Grey"></button>
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeModals()">Done</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: Customize Tag Color -->
-  <div class="modal-overlay" id="tagColorModal">
-    <div class="modal-card" style="text-align: center;">
-      <h3 id="tagColorHeading">Tag Color</h3>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 1.2rem 0;">
-        <input type="color" id="tagColorPicker" value="#0284c7" 
-               style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--card-border); cursor: pointer; padding: 0; background: none;" />
-        <p style="font-size: 0.82rem; color: var(--text-muted);">Pick a custom color for this tag across all tasks.</p>
+      <h3>Theme Color</h3>
+      <div style="margin: 1.5rem 0;">
+        <input type="color" id="customColorPicker" value="#0284c7" oninput="applyDynamicColor(this.value)" 
+               style="width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--card-border); cursor: pointer; padding: 0; background: none;" />
       </div>
       <div class="modal-actions">
-        <button class="btn-secondary" onclick="resetTagColor()">Reset Auto</button>
-        <button class="primary" onclick="saveCustomTagColor()">Save</button>
+        <button class="secondary" onclick="closeModals()">Done</button>
       </div>
     </div>
   </div>
 
   <script>
     let stacks = [];
+    let currentStackTags = [];
     let activeStack = 'All';
+    let isEditMode = false;
+    let currentSortCriterion = 'due_date';
+    let currentFilterTag = 'all';
+    let currentFilterStatus = 'all';
 
-    // --- Settings Dropdown Toggle & Window Dismiss ---
-    function toggleSettings(e) {
-      e.stopPropagation();
-      const menu = document.getElementById('settingsDropdown');
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    }
-
-    window.onclick = () => {
-      const dd = document.getElementById('settingsDropdown');
-      if (dd) dd.style.display = 'none';
-    };
-
-    function closeModals() {
-      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
-    }
-
-    // --- Color Wheel & Dynamic Theme Management ---
+    // --- Dynamic Color Management ---
     function hexToHSL(hex) {
       let r = parseInt(hex.slice(1, 3), 16) / 255;
       let g = parseInt(hex.slice(3, 5), 16) / 255;
       let b = parseInt(hex.slice(5, 7), 16) / 255;
-
       let max = Math.max(r, g, b), min = Math.min(r, g, b);
       let h, s, l = (max + min) / 2;
-
-      if (max === min) {
-        h = s = 0;
-      } else {
+      if (max === min) { h = s = 0; } else {
         let d = max - min;
         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
         switch (max) {
@@ -556,189 +797,137 @@
       return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
     }
 
+    function hslToHex(h, s, l) {
+      l /= 100;
+      const a = s * Math.min(l, 1 - l) / 100;
+      const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');
+      };
+      return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
     function applyDynamicColor(hex) {
       const { h, s } = hexToHSL(hex);
       const root = document.documentElement;
-
-      const bgOuter = `hsl(${h}, ${Math.min(s, 75)}%, 88%)`;
-      const bgInner = `hsl(${h}, ${Math.min(s, 65)}%, 95%)`;
-      const circleGlow = `hsl(${h}, ${Math.min(s, 60)}%, 94%)`;
-      const circleBorder = `hsla(${h}, ${Math.min(s, 80)}%, 40%, 0.25)`;
-      const textColor = `hsl(${h}, ${Math.min(s + 10, 90)}%, 28%)`;
-      const textMuted = `hsl(${h}, ${Math.min(s + 5, 80)}%, 40%)`;
-      const accent = `hsl(${h}, ${Math.min(s, 85)}%, 45%)`;
-
-      root.style.setProperty('--bg-outer', bgOuter);
-      root.style.setProperty('--bg-inner', bgInner);
-      root.style.setProperty('--circle-glow', circleGlow);
-      root.style.setProperty('--circle-border', circleBorder);
-      root.style.setProperty('--text', textColor);
-      root.style.setProperty('--text-muted', textMuted);
-      root.style.setProperty('--accent', accent);
+      root.style.setProperty('--bg-outer', `hsl(${h}, ${Math.min(s, 75)}%, 88%)`);
+      root.style.setProperty('--bg-inner', `hsl(${h}, ${Math.min(s, 65)}%, 95%)`);
+      root.style.setProperty('--circle-glow', `hsl(${h}, ${Math.min(s, 60)}%, 94%)`);
+      root.style.setProperty('--circle-border', `hsla(${h}, ${Math.min(s, 80)}%, 40%, 0.25)`);
+      root.style.setProperty('--text', `hsl(${h}, ${Math.min(s + 10, 90)}%, 28%)`);
+      root.style.setProperty('--text-muted', `hsl(${h}, ${Math.min(s + 5, 80)}%, 40%)`);
+      root.style.setProperty('--accent', `hsl(${h}, ${Math.min(s, 85)}%, 45%)`);
       root.style.setProperty('--card-border', `hsla(${h}, ${Math.min(s, 70)}%, 80%, 0.8)`);
-
-      const picker = document.getElementById('customColorPicker');
-      if (picker) picker.value = hex;
       localStorage.setItem('taskstack-hex', hex);
     }
 
-    function handleColorWheelInput(hex) {
-      applyDynamicColor(hex);
+    // Golden ratio conjugate dispersion ensures distinct hue for every tag
+    function hashStringToHue(str) {
+      let hash = 0;
+      const clean = (str || '').trim().toLowerCase();
+      for (let i = 0; i < clean.length; i++) {
+        hash = (hash * 31 + clean.charCodeAt(i)) & 0xFFFFFFFF;
+      }
+      const goldenRatioConjugate = 0.618033988749895;
+      let h = ((Math.abs(hash) * goldenRatioConjugate) % 1) * 360;
+      return Math.round(h);
     }
 
-    function setColorFromHex(hex) {
-      applyDynamicColor(hex);
+    function getTagStyle(tagName) {
+      const clean = (tagName || '').trim().toLowerCase();
+
+      // "General" is always neutral light grey
+      if (clean === 'general') {
+        return `background-color: #f1f5f9; color: #475569; border-color: #cbd5e1;`;
+      }
+
+      let customColors = {};
+      try {
+        customColors = JSON.parse(localStorage.getItem('taskstack-tag-colors')) || {};
+      } catch (e) {}
+
+      if (customColors[clean]) {
+        const { h, s } = hexToHSL(customColors[clean]);
+        return `background-color: hsl(${h}, ${Math.min(s, 70)}%, 90%); color: hsl(${h}, ${Math.min(s + 20, 95)}%, 24%); border-color: hsla(${h}, 70%, 50%, 0.3);`;
+      }
+
+      const hue = hashStringToHue(clean);
+      return `background-color: hsl(${hue}, 75%, 91%); color: hsl(${hue}, 85%, 25%); border-color: hsla(${hue}, 70%, 50%, 0.3);`;
     }
 
-    // Modal Triggers
-    function openColorModal() {
-      document.getElementById('settingsDropdown').style.display = 'none';
-      document.getElementById('colorModal').style.display = 'flex';
+    // --- Dropdowns & Modals ---
+    function toggleSettings(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('settingsDropdown');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     }
-
+    window.onclick = () => {
+      const dd = document.getElementById('settingsDropdown');
+      if (dd) dd.style.display = 'none';
+    };
+    function closeModals() {
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+    }
+    function openColorModal() { 
+      document.getElementById('settingsDropdown').style.display = 'none'; 
+      document.getElementById('colorModal').style.display = 'flex'; 
+    }
     function openDeleteModal() {
       document.getElementById('settingsDropdown').style.display = 'none';
-      const select = document.getElementById('deleteStackSelect');
-      if (stacks.length === 0) {
-        alert("You have no custom stacks to delete.");
-        return;
-      }
-      select.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+      const sel = document.getElementById('deleteStackSelect');
+      sel.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
       document.getElementById('deleteModal').style.display = 'flex';
     }
-
-    async function confirmDeleteStack() {
-      const stackName = document.getElementById('deleteStackSelect').value;
-      const deleteTasks = document.getElementById('deleteTasksCheckbox').checked;
-
-      if (!stackName) return;
-
-      const warningMessage = deleteTasks
-        ? `Are you sure you want to permanently delete "${stackName}" AND all tasks inside it?`
-        : `Are you sure you want to delete the stack "${stackName}"?`;
-
-      if (!confirm(warningMessage)) return;
-
-      const res = await fetch(`/stacks/${encodeURIComponent(stackName)}?delete_tasks=${deleteTasks}`, {
-        method: 'DELETE'
-      });
-
-      if (res.ok) {
-        closeModals();
-        await loadStacks();
-        showStacksView();
-      } else {
-        const err = await res.json();
-        alert(err.detail || "Failed to delete stack");
-      }
-    }
-
     function openMergeModal() {
       document.getElementById('settingsDropdown').style.display = 'none';
-      if (stacks.length < 2) {
-        alert("You need at least two custom stacks to perform a merge.");
-        return;
-      }
-      const sourceSelect = document.getElementById('mergeSourceSelect');
-      const targetSelect = document.getElementById('mergeTargetSelect');
-
-      sourceSelect.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
-      targetSelect.innerHTML = stacks.map((s, idx) => `<option value="${s.name}" ${idx === 1 ? 'selected' : ''}>${s.name}</option>`).join('');
-
-      loadSourceTasksForMerge();
+      const s1 = document.getElementById('mergeSourceSelect');
+      const s2 = document.getElementById('mergeTargetSelect');
+      s1.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+      s2.innerHTML = stacks.map((s, idx) => `<option value="${s.name}" ${idx === 1 ? 'selected' : ''}>${s.name}</option>`).join('');
       document.getElementById('mergeModal').style.display = 'flex';
     }
-
-    async function loadSourceTasksForMerge() {
-      const source = document.getElementById('mergeSourceSelect').value;
-      const checklist = document.getElementById('mergeTasksChecklist');
-      
-      const res = await fetch(`/assignments?stack=${encodeURIComponent(source)}`);
-      const tasks = await res.json();
-
-      if (tasks.length === 0) {
-        checklist.innerHTML = `<p style="color: var(--text-muted); font-size: 0.82rem;">No tasks inside this stack.</p>`;
-        return;
-      }
-
-      checklist.innerHTML = tasks.map(t => `
-        <label class="check-item">
-          <input type="checkbox" value="${t.id}" class="merge-task-cb" />
-          <span>${t.title}</span>
-        </label>
-      `).join('');
+    function openCanvasModal() {
+      document.getElementById('settingsDropdown').style.display = 'none';
+      document.getElementById('canvasFeedUrl').value = localStorage.getItem('taskstack-canvas-url') || '';
+      const sel = document.getElementById('canvasStackSelect');
+      sel.innerHTML = stacks.length === 0 ? `<option value="School">School</option>` : stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+      document.getElementById('canvasSyncStatus').style.display = 'none';
+      document.getElementById('canvasModal').style.display = 'flex';
     }
 
-    async function confirmMergeStacks() {
-      const source = document.getElementById('mergeSourceSelect').value;
-      const target = document.getElementById('mergeTargetSelect').value;
-
-      if (source === target) {
-        alert("Source and target stacks must be different.");
-        return;
-      }
-
-      const checkedBoxes = Array.from(document.querySelectorAll('.merge-task-cb:checked')).map(cb => parseInt(cb.value));
-      const payload = {
-        source_stack: source,
-        target_stack: target,
-        task_ids: checkedBoxes.length > 0 ? checkedBoxes : null
-      };
-
-      const res = await fetch('/stacks/merge', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (res.ok) {
-        closeModals();
-        openStackView(target);
-      } else {
-        const err = await res.json();
-        alert(err.detail || "Failed to merge stacks");
-      }
-    }
-
-    // Stacks Management
+    // --- Stacks & Tag Management ---
     async function loadStacks() {
       const res = await fetch('/stacks');
       stacks = await res.json();
       
       const grid = document.getElementById('stacksListGrid');
-      if (grid) {
-        grid.innerHTML = `
-          <div class="stack-card" onclick="openStackView('All')">All Tasks</div>
-          ${stacks.map(s => `
-            <div class="stack-card" onclick="openStackView('${s.name}')">${s.name}</div>
-          `).join('')}
-        `;
-      }
+      grid.innerHTML = `
+        <div class="stack-card" onclick="openStackView('All')">All Tasks</div>
+        ${stacks.map(s => `<div class="stack-card" onclick="openStackView('${s.name}')">${s.name}</div>`).join('')}
+      `;
 
       const select = document.getElementById('stackSelect');
-      if (select) {
-        if (stacks.length === 0) {
-          select.innerHTML = `<option value="General">General</option>`;
-        } else {
-          select.innerHTML = stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
-        }
-      }
+      select.innerHTML = stacks.length === 0 
+        ? `<option value="General">General</option>` 
+        : stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
     }
 
     async function handleCreateStack(e) {
       e.preventDefault();
-      const input = document.getElementById('newStackInput');
-      const name = input.value.trim();
-      if (!name) return;
+      const name = document.getElementById('newStackInput').value.trim();
+      const rawTags = document.getElementById('newStackTagsInput').value.trim();
+      const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(Boolean) : [];
 
       const res = await fetch('/stacks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name })
+        body: JSON.stringify({ name, tags })
       });
 
       if (res.ok) {
-        input.value = '';
+        document.getElementById('newStackInput').value = '';
+        document.getElementById('newStackTagsInput').value = '';
         await loadStacks();
         openStackView(name);
       } else {
@@ -747,89 +936,423 @@
       }
     }
 
-    // View Navigation Helpers
+    async function loadTagsForStack(stackName) {
+      const res = await fetch(`/stacks/${encodeURIComponent(stackName)}/tags`);
+      currentStackTags = await res.json();
+
+      const sidebar = document.getElementById('sidebarTagsList');
+      const addBtn = document.getElementById('sidebarAddTagBtn');
+      
+      if (addBtn) {
+        addBtn.style.display = stackName === 'All' ? 'none' : 'inline-block';
+      }
+
+      if (currentStackTags.length === 0) {
+        sidebar.innerHTML = `<p style="font-size: 0.78rem; color: var(--text-muted); text-align: center; margin: 1rem 0;">No tags yet.</p>`;
+      } else {
+        sidebar.innerHTML = currentStackTags.map(t => `
+          <div class="tag-row-item" style="${getTagStyle(t)}">
+            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t}</span>
+            ${stackName !== 'All' ? `<button class="tag-pill-btn" title="Delete tag" onclick="deleteTagFromStack('${t}')">&times;</button>` : ''}
+          </div>
+        `).join('');
+      }
+
+      // Inside loadTagsForStack(stackName):
+      const filterOptgroup = document.getElementById('filterByTagOptgroup');
+      if (filterOptgroup) {
+        filterOptgroup.innerHTML = `
+          <option value="filter:tag:all">Show All Tags</option>
+          ${currentStackTags.map(t => `<option value="filter:tag:${t.toLowerCase()}">${t}</option>`).join('')}
+        `;
+      }
+
+      // Populate batch selectors
+      const filterTagSel = document.getElementById('filterSelectByTag');
+      if (filterTagSel) {
+        filterTagSel.innerHTML = `<option value="">Choose Tag...</option>` + currentStackTags.map(t => `<option value="${t.toLowerCase()}">${t}</option>`).join('');
+      }
+
+      const batchTagSel = document.getElementById('batchTagSelect');
+      if (batchTagSel) {
+        batchTagSel.innerHTML = `<option value="">Change Tag to...</option>` + currentStackTags.map(t => `<option value="${t}">${t}</option>`).join('');
+      }
+    }
+
+    function promptAddNewTag() {
+      if (activeStack === 'All') return;
+      document.getElementById('addTagModalHeading').innerText = `Add Tag to "${activeStack}"`;
+      document.getElementById('newTagNameInput').value = '';
+      
+      const randomHue = Math.floor(Math.random() * 360);
+      document.getElementById('newTagColorPicker').value = hslToHex(randomHue, 75, 45);
+      
+      document.getElementById('addTagModal').style.display = 'flex';
+      document.getElementById('newTagNameInput').focus();
+    }
+
+    async function submitAddNewTagWithColor() {
+      const tagName = document.getElementById('newTagNameInput').value.trim();
+      const tagColor = document.getElementById('newTagColorPicker').value;
+
+      if (!tagName) return alert("Please provide a tag name.");
+
+      let customColors = {};
+      try {
+        customColors = JSON.parse(localStorage.getItem('taskstack-tag-colors')) || {};
+      } catch (e) {}
+      customColors[tagName.toLowerCase()] = tagColor;
+      localStorage.setItem('taskstack-tag-colors', JSON.stringify(customColors));
+
+      const res = await fetch(`/stacks/${encodeURIComponent(activeStack)}/tags`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tag_name: tagName })
+      });
+
+      if (res.ok) {
+        closeModals();
+        await loadTagsForStack(activeStack);
+        await fetchAssignments();
+      } else {
+        const err = await res.json();
+        alert(err.detail || "Could not add tag.");
+      }
+    }
+
+    async function deleteTagFromStack(tagName) {
+      if (activeStack === 'All') return;
+
+      const matchingTasks = document.querySelectorAll(`input.task-checkbox[data-tag="${tagName.toLowerCase()}"]`).length;
+
+      let confirmMsg = `Are you sure you want to remove tag "${tagName}" from stack "${activeStack}"?`;
+      if (matchingTasks > 0) {
+        confirmMsg += `\n\nWarning: ${matchingTasks} task(s) currently use this tag and will be reassigned to "General".`;
+      }
+
+      if (!confirm(confirmMsg)) return;
+
+      const res = await fetch(`/stacks/${encodeURIComponent(activeStack)}/tags/${encodeURIComponent(tagName)}`, {
+        method: 'DELETE'
+      });
+
+      if (res.ok) {
+        await loadTagsForStack(activeStack);
+        await fetchAssignments();
+      } else {
+        const err = await res.json();
+        alert(err.detail || "Could not delete tag.");
+      }
+    }
+
+    async function updateTagChoicesForTaskForm() {
+      const selectedStack = document.getElementById('stackSelect').value;
+      const res = await fetch(`/stacks/${encodeURIComponent(selectedStack)}/tags`);
+      const tags = await res.json();
+      const tagSel = document.getElementById('courseTagSelect');
+      tagSel.innerHTML = tags.map(t => `<option value="${t}">${t}</option>`).join('');
+    }
+
+    // --- Views Navigation ---
     function hideAllViews() {
       document.getElementById('homeView').style.display = 'none';
       document.getElementById('stacksView').style.display = 'none';
       document.getElementById('createView').style.display = 'none';
       document.getElementById('listView').style.display = 'none';
     }
-
-    function showHomeView() {
-      hideAllViews();
-      document.getElementById('homeView').style.display = 'grid';
-    }
-
-    function showStacksView() {
-      hideAllViews();
-      document.getElementById('stacksView').style.display = 'block';
-      loadStacks();
-    }
-
+    function showHomeView() { hideAllViews(); document.getElementById('homeView').style.display = 'grid'; }
+    function showStacksView() { hideAllViews(); document.getElementById('stacksView').style.display = 'block'; loadStacks(); }
     function showCreateTaskView() {
       hideAllViews();
       document.getElementById('createView').style.display = 'block';
-      if (activeStack !== 'All') {
-        const select = document.getElementById('stackSelect');
-        if (select) select.value = activeStack;
-      }
+      if (activeStack !== 'All') document.getElementById('stackSelect').value = activeStack;
+      updateTagChoicesForTaskForm();
     }
 
     async function openStackView(stackName) {
       activeStack = stackName;
-      hideAllViews();
+      isEditMode = false;
+      currentSortCriterion = 'due_date';
+      currentFilterTag = 'all';
+      currentFilterStatus = 'all';
+
+      const sortSel = document.getElementById('sortCriterionSelect');
+      if (sortSel) sortSel.selectedIndex = 0; // displays "Filter" placeholder
+
+      document.getElementById('batchActionBar').style.display = 'none';
+      document.getElementById('btnToggleEdit').innerText = 'Edit';
       document.getElementById('currentStackHeading').innerText = stackName === 'All' ? 'All Tasks' : stackName;
+      hideAllViews();
       document.getElementById('listView').style.display = 'block';
+      await loadTagsForStack(stackName);
       await fetchAssignments();
     }
 
-    async function fetchAssignments() {
-      let url = new URL('/assignments', window.location.origin);
-      if (activeStack !== 'All') {
-        url.searchParams.append('stack', activeStack);
+    function handleSortFilterChange(val) {
+      // 1. Always wipe state back to pure "Default" baseline first
+      currentSortCriterion = 'due_date';
+      currentFilterTag = 'all';
+      currentFilterStatus = 'all';
+
+      // 2. Apply ONLY the single selected rule
+      if (val === 'default') {
+        // Already at baseline (due_date sort + done tasks pinned to bottom)
+      } else if (val.startsWith('filter:tag:')) {
+        currentFilterTag = val.replace('filter:tag:', '').toLowerCase();
+      } else if (val.startsWith('filter:status:')) {
+        currentFilterStatus = val.replace('filter:status:', '');
+      } else if (val.startsWith('sort:')) {
+        currentSortCriterion = val.replace('sort:', '');
       }
 
+      fetchAssignments();
+    }
+
+    // --- Task Rendering, Bottom-Pinning of Done, & Sorting ---
+    async function fetchAssignments() {
+      let url = new URL('/assignments', window.location.origin);
+      if (activeStack !== 'All') url.searchParams.append('stack', activeStack);
+
       const res = await fetch(url);
-      const tasks = await res.json();
+      let tasks = await res.json();
       const container = document.getElementById('tasksContainer');
 
+      // 1. Apply Tag Filter
+      if (currentFilterTag !== 'all') {
+        tasks = tasks.filter(t => (t.course || '').trim().toLowerCase() === currentFilterTag);
+      }
+
+      // 2. Apply Status Filter
+      if (currentFilterStatus !== 'all') {
+        tasks = tasks.filter(t => t.status === currentFilterStatus);
+      }
+
       if (tasks.length === 0) {
-        container.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin: 2rem 0;">No tasks found in this stack.</p>`;
+        container.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin: 3rem 0;">No tasks found.</p>`;
         return;
       }
 
-      container.innerHTML = tasks.map(t => `
-        <div class="task-card">
-          <div style="flex-grow: 1; padding-right: 1rem;">
-            <div style="font-weight: 600; color: var(--text); ${t.status === 'done' ? 'text-decoration: line-through; opacity: 0.5;' : ''}">
-              ${t.title}
+      const statusWeight = {
+        'not_started': 0,
+        'in_progress': 1,
+        'done': 2
+      };
+
+      tasks.sort((a, b) => {
+        // 1. "pure_due_date": strictly chronological, ignoring status
+        if (currentSortCriterion === 'pure_due_date') {
+          const dateComp = (a.due_date || '').localeCompare(b.due_date || '');
+          if (dateComp !== 0) return dateComp;
+          return (a.due_time || '').localeCompare(b.due_time || '');
+        }
+
+        // 2. "course": keep all tasks with the SAME tag together
+        if (currentSortCriterion === 'course') {
+          const courseComp = (a.course || '').localeCompare(b.course || '', undefined, { sensitivity: 'base' });
+          if (courseComp !== 0) return courseComp;
+
+          // Within the same tag, place done tasks at the end of that tag group
+          const aDone = a.status === 'done';
+          const bDone = b.status === 'done';
+          if (aDone && !bDone) return 1;
+          if (!aDone && bDone) return -1;
+
+          // Within the same tag and status group, sort by due date
+          const dateComp = (a.due_date || '').localeCompare(b.due_date || '');
+          if (dateComp !== 0) return dateComp;
+          return (a.due_time || '').localeCompare(b.due_time || '');
+        }
+
+        // 3. For Default and Sort by Status: push done tasks to the bottom of the entire stack
+        const aDone = a.status === 'done';
+        const bDone = b.status === 'done';
+
+        if (aDone && !bDone) return 1;
+        if (!aDone && bDone) return -1;
+
+        if (currentSortCriterion === 'due_date') {
+          const dateComp = (a.due_date || '').localeCompare(b.due_date || '');
+          if (dateComp !== 0) return dateComp;
+          return (a.due_time || '').localeCompare(b.due_time || '');
+        }
+
+        if (currentSortCriterion === 'status') {
+          const weightDiff = (statusWeight[a.status] ?? 0) - (statusWeight[b.status] ?? 0);
+          if (weightDiff !== 0) return weightDiff;
+          return (a.due_date || '').localeCompare(b.due_date || '');
+        }
+
+        return 0;
+      });
+
+      container.innerHTML = tasks.map(t => {
+        const formattedDate = formatDueDate(t.due_date);
+        const formattedTime = formatDueTime(t.due_time);
+        const hasDate = Boolean(t.due_date && t.due_date.trim() !== '');
+
+        const { isOverdue, isDueSoon } = getDueUrgency(t.due_date, t.due_time, t.status);
+
+        return `
+          <div class="task-card">
+            <input type="checkbox" class="task-checkbox" value="${t.id}" data-tag="${t.course.toLowerCase()}" style="${isEditMode ? 'display: block;' : 'display: none;'}" />
+
+            <!-- Main Content: Title & Tag Badges -->
+            <div style="flex-grow: 1; min-width: 0;">
+              <div style="font-weight: 600; font-size: 0.98rem; color: var(--text); margin-bottom: 0.2rem; ${t.status === 'done' ? 'text-decoration: line-through; opacity: 0.5;' : ''}" class="${isDueSoon ? 'due-soon-text' : ''}">
+                ${isOverdue ? '<span class="badge-late">&#9888; LATE</span> ' : ''}
+                ${t.title}
+              </div>
+              <div class="meta">
+                <span class="tag-badge" style="background: rgba(0,0,0,0.05); color: var(--text);">${t.stack_name}</span>
+
+                <!-- Tag Dropdown Switcher -->
+                <span class="tag-badge" id="tag-badge-${t.id}" style="${getTagStyle(t.course)}" onclick="showInlineTagSelect(${t.id})">
+                  ${t.course}
+                </span>
+                <select class="tag-select-inline" id="tag-select-${t.id}" onchange="reassignTaskTag(${t.id}, this.value)">
+                  ${currentStackTags.map(tag => `<option value="${tag}" ${tag === t.course ? 'selected' : ''}>${tag}</option>`).join('')}
+                </select>
+
+                ${t.link ? `<a href="${t.link}" target="_blank" style="color: var(--accent); font-weight: 700;">Link &rarr;</a>` : ''}
+              </div>
             </div>
-            <div class="meta">
-              <span class="tag">${t.stack_name}</span>
-              <span class="tag" style="${getTagStyle(t.course)}" title="Click to customize color" onclick="openTagColorEditor('${t.course}')">
-                ${t.course}
-              </span>
-              <span>Due: ${t.due_date} ${t.due_time || ''}</span>
-              ${t.link ? `<a href="${t.link}" target="_blank" style="color: var(--accent); font-weight: 600;">Link</a>` : ''}
+
+            <!-- Inline Due Date & Time Badge -->
+            <div class="due-badge ${hasDate ? '' : 'no-date'} ${isDueSoon ? 'due-soon' : ''} ${isOverdue ? 'due-soon' : ''}">
+              <span>${formattedDate}</span>
+              ${formattedTime ? `<span class="due-time-inline ${(isDueSoon || isOverdue) ? 'due-soon-text' : ''}">${formattedTime}</span>` : ''}
+            </div>
+
+            <!-- Status & Action Controls -->
+            <div class="actions">
+              <select class="status-select ${t.status}" onchange="updateStatus(${t.id}, this.value)">
+                <option value="not_started" ${t.status === 'not_started' ? 'selected' : ''}>Not Started</option>
+                <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                <option value="done" ${t.status === 'done' ? 'selected' : ''}>Done</option>
+              </select>
+              <button class="btn-delete" title="Delete Task" onclick="deleteTask(${t.id})">&times;</button>
             </div>
           </div>
-          <div class="actions">
-            <select class="status-select ${t.status}" onchange="updateStatus(${t.id}, this.value)">
-              <option value="not_started" ${t.status === 'not_started' ? 'selected' : ''}>Not Started</option>
-              <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
-              <option value="done" ${t.status === 'done' ? 'selected' : ''}>Done</option>
-            </select>
-            <button class="btn-delete" title="Delete Task" onclick="deleteTask(${t.id})">&times;</button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
+    function showInlineTagSelect(taskId) {
+      document.getElementById(`tag-badge-${taskId}`).style.display = 'none';
+      const sel = document.getElementById(`tag-select-${taskId}`);
+      sel.style.display = 'inline-block';
+      sel.focus();
+    }
+
+    async function reassignTaskTag(taskId, newTag) {
+      await fetch(`/assignments/${taskId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ course: newTag })
+      });
+      fetchAssignments();
+    }
+
+    // --- Batch / Multi-Edit Mode ---
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      document.getElementById('batchActionBar').style.display = isEditMode ? 'flex' : 'none';
+      document.getElementById('btnToggleEdit').innerText = isEditMode ? 'Done' : 'Edit';
+      
+      const filterSel = document.getElementById('filterSelectByTag');
+      if (filterSel) filterSel.value = '';
+      
+      const selectAllCb = document.getElementById('selectAllCheckbox');
+      if (selectAllCb) selectAllCb.checked = false;
+
+      document.querySelectorAll('.task-checkbox').forEach(cb => {
+        cb.style.display = isEditMode ? 'block' : 'none';
+        if (!isEditMode) cb.checked = false;
+      });
+    }
+
+    function toggleSelectAll(checked) {
+      document.querySelectorAll('.task-checkbox').forEach(cb => cb.checked = checked);
+    }
+
+    function selectTasksByTag(tagValue) {
+      const selectAllCb = document.getElementById('selectAllCheckbox');
+      const checkboxes = document.querySelectorAll('.task-checkbox');
+
+      if (!tagValue) {
+        checkboxes.forEach(cb => cb.checked = false);
+        if (selectAllCb) selectAllCb.checked = false;
+        return;
+      }
+
+      let matchCount = 0;
+      checkboxes.forEach(cb => {
+        if (cb.dataset.tag === tagValue.toLowerCase()) {
+          cb.checked = true;
+          matchCount++;
+        } else {
+          cb.checked = false;
+        }
+      });
+
+      if (selectAllCb) {
+        selectAllCb.checked = matchCount > 0 && matchCount === checkboxes.length;
+      }
+    }
+
+    function getSelectedTaskIds() {
+      return Array.from(document.querySelectorAll('.task-checkbox:checked')).map(cb => parseInt(cb.value));
+    }
+
+    async function applyBatchStatus() {
+      const task_ids = getSelectedTaskIds();
+      const status = document.getElementById('batchStatusSelect').value;
+      if (!task_ids.length || !status) return alert('Select tasks and a status.');
+
+      await fetch('/assignments/batch/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task_ids, status })
+      });
+      fetchAssignments();
+    }
+
+    async function applyBatchTag() {
+      const task_ids = getSelectedTaskIds();
+      const course = document.getElementById('batchTagSelect').value;
+      if (!task_ids.length || !course) return alert('Select tasks and a tag.');
+
+      await fetch('/assignments/batch/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task_ids, course })
+      });
+      fetchAssignments();
+    }
+
+    async function deleteSelectedTasks() {
+      const task_ids = getSelectedTaskIds();
+      if (!task_ids.length) return alert('Select tasks to delete.');
+      if (!confirm(`Delete ${task_ids.length} selected tasks?`)) return;
+
+      await fetch('/assignments/batch/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task_ids })
+      });
+      fetchAssignments();
+    }
+
+    // --- Create Task Form Handler ---
     document.getElementById('createTaskForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const customTag = document.getElementById('customCourseTagInput').value.trim();
+      const dropdownTag = document.getElementById('courseTagSelect').value;
+      const finalCourse = customTag || dropdownTag || 'General';
+
       const payload = {
         title: document.getElementById('title').value,
-        course: document.getElementById('course').value,
+        course: finalCourse,
         stack_name: document.getElementById('stackSelect').value,
         due_date: document.getElementById('due_date').value,
         due_time: document.getElementById('due_time').value || null,
@@ -863,87 +1386,128 @@
       }
     }
 
-    // Restore saved theme and initial load
+    async function submitCanvasSync() {
+      const feedUrl = document.getElementById('canvasFeedUrl').value.trim();
+      const targetStack = document.getElementById('canvasStackSelect').value;
+      const statusBox = document.getElementById('canvasSyncStatus');
+      const syncBtn = document.getElementById('btnSyncCanvas');
+
+      if (!feedUrl) return alert("Please paste your Canvas iCal link.");
+      localStorage.setItem('taskstack-canvas-url', feedUrl);
+
+      syncBtn.disabled = true;
+      statusBox.style.display = 'block';
+      statusBox.innerText = "Syncing assignments and class tags...";
+
+      try {
+        const res = await fetch('/canvas/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ feed_url: feedUrl, target_stack: targetStack })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          statusBox.innerText = `Synced ${data.imported} items!`;
+          setTimeout(async () => {
+            closeModals();
+            syncBtn.disabled = false;
+            await loadStacks();
+            openStackView(targetStack);
+          }, 800);
+        } else {
+          statusBox.innerText = `Error: ${data.detail || 'Could not sync feed'}`;
+          syncBtn.disabled = false;
+        }
+      } catch (err) {
+        statusBox.innerText = `Network error: ${err.message}`;
+        syncBtn.disabled = false;
+      }
+    }
+
+    async function confirmDeleteStack() {
+      const stackName = document.getElementById('deleteStackSelect').value;
+      const deleteTasks = document.getElementById('deleteTasksCheckbox').checked;
+      if (!confirm(`Are you sure you want to delete stack "${stackName}"?`)) return;
+
+      const res = await fetch(`/stacks/${encodeURIComponent(stackName)}?delete_tasks=${deleteTasks}`, { method: 'DELETE' });
+      if (res.ok) {
+        closeModals();
+        await loadStacks();
+        showStacksView();
+      }
+    }
+
+    async function confirmMergeStacks() {
+      const source = document.getElementById('mergeSourceSelect').value;
+      const target = document.getElementById('mergeTargetSelect').value;
+      if (source === target) return alert("Source and target must be different.");
+
+      const res = await fetch('/stacks/merge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source_stack: source, target_stack: target })
+      });
+      if (res.ok) {
+        closeModals();
+        openStackView(target);
+      }
+    }
+
+    // Formats YYYY-MM-DD -> MM/DD/YY with fallbacks
+    function formatDueDate(dateStr) {
+      if (!dateStr || dateStr.trim() === '') return 'No Due Date';
+      const parts = dateStr.trim().split('-');
+      if (parts.length === 3) {
+        const [year, month, day] = parts;
+        const shortYear = year.slice(-2);
+        return `${month}/${day}/${shortYear}`;
+      }
+      return dateStr;
+    }
+
+    // Formats 24h HH:MM -> 12h civilian time (e.g. 11:59 PM), omitting if missing or blank
+    function formatDueTime(timeStr) {
+      if (!timeStr || timeStr.trim() === '') return '';
+      const parts = timeStr.trim().split(':');
+      if (parts.length >= 2) {
+        let hour = parseInt(parts[0], 10);
+        const minute = parts[1];
+        if (isNaN(hour)) return timeStr;
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12;
+        return `${hour}:${minute} ${ampm}`;
+      }
+      return timeStr;
+    }
+
+    // Init
     const savedHex = localStorage.getItem('taskstack-hex') || '#0284c7';
     applyDynamicColor(savedHex);
     loadStacks();
 
-    // --- Tag Color Pipeline ---
-
-    let currentEditingTag = null;
-
-    function getCustomTagColors() {
-      try {
-        return JSON.parse(localStorage.getItem('taskstack-tag-colors')) || {};
-      } catch {
-        return {};
-      }
-    }
-
-    // Hash string into a deterministic hue (0 - 359)
-    function hashStringToHue(str) {
-      let hash = 0;
-      const clean = str.trim().toLowerCase();
-      for (let i = 0; i < clean.length; i++) {
-        hash = clean.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      return Math.abs(hash % 360);
-    }
-
-    // Resolves background and text styling
-    function getTagStyle(tagName) {
-      const customColors = getCustomTagColors();
-      const customHex = customColors[tagName.trim().toLowerCase()];
-
-      if (customHex) {
-        const { h, s } = hexToHSL(customHex);
-        return `background-color: hsl(${h}, ${Math.min(s, 75)}%, 90%); color: hsl(${h}, ${Math.min(s + 20, 95)}%, 25%); border-color: hsla(${h}, ${s}%, 50%, 0.25);`;
+    function getDueUrgency(dateStr, timeStr, status) {
+      if (!dateStr || dateStr.trim() === '' || status === 'done') {
+        return { isOverdue: false, isDueSoon: false };
       }
 
-      // Automatic fallback derived from tag name
-      const hue = hashStringToHue(tagName);
-      return `background-color: hsl(${hue}, 70%, 91%); color: hsl(${hue}, 85%, 26%); border-color: hsla(${hue}, 70%, 50%, 0.25);`;
-    }
-
-    // Modal Handlers
-    function openTagColorEditor(tagName) {
-      currentEditingTag = tagName;
-      document.getElementById('tagColorHeading').innerText = `Color for "${tagName}"`;
+      const timePart = (timeStr && timeStr.trim() !== '') ? timeStr.trim() : '23:59';
+      // Construct deadline date object
+      const deadline = new Date(`${dateStr.trim()}T${timePart.length === 5 ? timePart + ':00' : timePart}`);
       
-      const customColors = getCustomTagColors();
-      const existingHex = customColors[tagName.trim().toLowerCase()];
-      
-      // Default color input to existing choice or calculated auto-hue
-      if (existingHex) {
-        document.getElementById('tagColorPicker').value = existingHex;
-      } else {
-        const hue = hashStringToHue(tagName);
-        document.getElementById('tagColorPicker').value = `hsl(${hue}, 70%, 50%)`;
+      if (isNaN(deadline.getTime())) {
+        return { isOverdue: false, isDueSoon: false };
       }
-      
-      document.getElementById('tagColorModal').style.display = 'flex';
-    }
 
-    function saveCustomTagColor() {
-      if (!currentEditingTag) return;
-      const hex = document.getElementById('tagColorPicker').value;
-      const customColors = getCustomTagColors();
-      customColors[currentEditingTag.trim().toLowerCase()] = hex;
-      localStorage.setItem('taskstack-tag-colors', JSON.stringify(customColors));
-      
-      closeModals();
-      fetchAssignments();
-    }
+      const now = new Date();
+      const diffMs = deadline - now;
+      const hoursLeft = diffMs / (1000 * 60 * 60);
 
-    function resetTagColor() {
-      if (!currentEditingTag) return;
-      const customColors = getCustomTagColors();
-      delete customColors[currentEditingTag.trim().toLowerCase()];
-      localStorage.setItem('taskstack-tag-colors', JSON.stringify(customColors));
-      
-      closeModals();
-      fetchAssignments();
+      const isOverdue = diffMs < 0;
+      const isDueSoon = !isOverdue && hoursLeft <= 24;
+
+      return { isOverdue, isDueSoon };
     }
+    
   </script>
 </body>
 </html>
