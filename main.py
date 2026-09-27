@@ -86,10 +86,6 @@ class MergeStacksRequest(BaseModel):
     target_stack: str
     task_ids: Optional[List[int]] = None
 
-class CanvasSyncRequest(BaseModel):
-    feed_url: str
-    target_stack: str
-
 class AssignmentCreate(BaseModel):
     title: str
     course: str
@@ -107,6 +103,15 @@ class AssignmentUpdate(BaseModel):
     due_time: Optional[str] = None
     status: Optional[str] = None
     link: Optional[str] = None
+
+class CanvasInspectRequest(BaseModel):
+    feed_url: str
+    target_stack: str
+
+class CanvasSyncRequest(BaseModel):
+    feed_url: str
+    target_stack: str
+    allowed_tags: list[str] = []
 
 # --- UI Root ---
 
@@ -243,10 +248,108 @@ def merge_stacks(payload: MergeStacksRequest):
 
 # --- Canvas Sync Endpoint ---
 
+@app.post("/canvas/inspect")
+async def inspect_canvas_feed(payload: CanvasInspectRequest):
+    feed_url = payload.feed_url.strip()
+    target_stack = payload.target_stack.strip()
+
+    if feed_url.startswith("webcal://"):
+        feed_url = "https://" + feed_url[len("webcal://"):]
+
+    if not feed_url.startswith("http://") and not feed_url.startswith("https://"):
+        raise HTTPException(status_code=400, detail="Invalid feed URL.")
+
+    try:
+        async with httpx.AsyncClient(timeout=20.0, follow_redirects=True) as client:
+            resp = await client.get(feed_url)
+            if resp.status_code != 200:
+                raise HTTPException(status_code=400, detail=f"Canvas returned code {resp.status_code}.")
+            raw_ics = resp.text
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Canvas connection failed: {str(e)}")
+
+    try:
+        cal = Calendar.from_ical(raw_ics)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid iCal format: {str(e)}")
+
+    # Fetch tags already registered to this stack
+    with get_db() as conn:
+        cursor = conn.cursor()
+        existing_tags = {
+            row[0] for row in cursor.execute(
+                "SELECT tag_name FROM stack_tags WHERE stack_name = ?", (target_stack,)
+            ).fetchall()
+        }
+
+    now = datetime.now()
+    tag_counts = {}
+
+    for component in cal.walk():
+        if component.name != "VEVENT":
+            continue
+
+        raw_summary = str(component.get("SUMMARY") or "").strip()
+        categories = str(component.get("CATEGORIES") or "").strip()
+
+        # Parse due date & time
+        dtend = component.get("DTEND") or component.get("DTSTART")
+        if not dtend:
+            continue
+
+        dt_val = dtend.dt
+        if isinstance(dt_val, datetime):
+            # Convert to naive if needed for comparison
+            if dt_val.tzinfo:
+                dt_val = dt_val.astimezone().replace(tzinfo=None)
+            due_dt = dt_val
+        elif isinstance(dt_val, date):
+            due_dt = datetime.combine(dt_val, datetime.max.time())
+        else:
+            continue
+
+        # Past-due filter: ignore expired tasks
+        if due_dt < now:
+            continue
+
+        # Extract tag
+        course_tag = None
+        bracket_end_match = re.search(r"\s*\[(.*?)\]\s*$", raw_summary)
+        if bracket_end_match:
+            full_course_code = bracket_end_match.group(1).strip()
+            clean_match = re.search(r"(?:[0-9]{4}[A-Z]{2}_)?([A-Za-z_]+_\d+)(?:-\d+.*)?", full_course_code)
+            course_tag = clean_match.group(1).strip() if clean_match else full_course_code.split("_SEC")[0].split("-")[0]
+
+        if not course_tag:
+            bracket_front_match = re.match(r"^\[(.*?)\]\s*(.*)$", raw_summary)
+            if bracket_front_match:
+                course_tag = bracket_front_match.group(1).strip()
+
+        if not course_tag and categories and categories.lower() != "canvas":
+            course_tag = categories
+
+        if not course_tag:
+            course_tag = "General"
+
+        tag_counts[course_tag] = tag_counts.get(course_tag, 0) + 1
+
+    return {
+        "detected_tags": [
+            {
+                "tag": tag,
+                "count": count,
+                "already_in_stack": tag in existing_tags
+            }
+            for tag, count in tag_counts.items()
+        ]
+    }
+
+
 @app.post("/canvas/sync", status_code=status.HTTP_200_OK)
 async def sync_canvas_feed(payload: CanvasSyncRequest):
     feed_url = payload.feed_url.strip()
     target_stack = payload.target_stack.strip()
+    allowed_tags = set(payload.allowed_tags)
 
     if feed_url.startswith("webcal://"):
         feed_url = "https://" + feed_url[len("webcal://"):]
@@ -257,7 +360,6 @@ async def sync_canvas_feed(payload: CanvasSyncRequest):
     if not target_stack or target_stack.lower() == "all":
         raise HTTPException(status_code=400, detail="Select a valid destination stack.")
 
-    # Extract canvas domain (e.g. canvas.northwestern.edu)
     parsed_feed = urlparse(feed_url)
     canvas_domain = parsed_feed.netloc
 
@@ -276,6 +378,7 @@ async def sync_canvas_feed(payload: CanvasSyncRequest):
         raise HTTPException(status_code=400, detail=f"Invalid iCal format: {str(e)}")
 
     imported_count = 0
+    now = datetime.now()
 
     with get_db() as conn:
         cursor = conn.cursor()
@@ -293,40 +396,7 @@ async def sync_canvas_feed(payload: CanvasSyncRequest):
             description = str(component.get("DESCRIPTION") or "")
             categories = str(component.get("CATEGORIES") or "").strip()
 
-            course_tag = None
-            title = raw_summary
-
-            # 1. Match Northwestern/Standard Canvas brackets at the END:
-            # "Title Here [2026FA_PERF_ST_103-0_SEC2]"
-            bracket_end_match = re.search(r"\s*\[(.*?)\]\s*$", raw_summary)
-            if bracket_end_match:
-                full_course_code = bracket_end_match.group(1).strip()
-                title = raw_summary[:bracket_end_match.start()].strip()
-                
-                clean_match = re.search(r"(?:[0-9]{4}[A-Z]{2}_)?([A-Za-z_]+_\d+)(?:-\d+.*)?", full_course_code)
-                if clean_match:
-                    course_tag = clean_match.group(1).strip()
-                else:
-                    course_tag = full_course_code.split("_SEC")[0].split("-")[0]
-
-            # 2. Match brackets at the FRONT: "[CS 211] Homework 1"
-            if not course_tag:
-                bracket_front_match = re.match(r"^\[(.*?)\]\s*(.*)$", raw_summary)
-                if bracket_front_match:
-                    course_tag = bracket_front_match.group(1).strip()
-                    title = bracket_front_match.group(2).strip() or raw_summary
-
-            # 3. Fallbacks
-            if not course_tag and categories and categories.lower() != "canvas":
-                course_tag = categories
-
-            if not course_tag:
-                course_tag = "General"
-
-            # Register tag
-            cursor.execute("INSERT OR IGNORE INTO stack_tags (stack_name, tag_name) VALUES (?, ?)", (target_stack, course_tag))
-
-            # Parse Due Date / Time
+            # Past-due filter check
             dtend = component.get("DTEND") or component.get("DTSTART")
             due_date_str = None
             due_time_str = None
@@ -334,49 +404,76 @@ async def sync_canvas_feed(payload: CanvasSyncRequest):
             if dtend:
                 dt_val = dtend.dt
                 if isinstance(dt_val, datetime):
+                    if dt_val.tzinfo:
+                        dt_val = dt_val.astimezone().replace(tzinfo=None)
+                    if dt_val < now:
+                        continue
                     due_date_str = dt_val.strftime("%Y-%m-%d")
                     due_time_str = dt_val.strftime("%H:%M")
                 elif isinstance(dt_val, date):
+                    if datetime.combine(dt_val, datetime.max.time()) < now:
+                        continue
                     due_date_str = dt_val.strftime("%Y-%m-%d")
                     due_time_str = "23:59"
 
             if not due_date_str:
-                due_date_str = datetime.now().strftime("%Y-%m-%d")
-                due_time_str = "23:59"
+                continue
 
-            # Direct Assignment URL resolution
+            # Tag extraction
+            course_tag = None
+            title = raw_summary
+
+            bracket_end_match = re.search(r"\s*\[(.*?)\]\s*$", raw_summary)
+            if bracket_end_match:
+                full_course_code = bracket_end_match.group(1).strip()
+                title = raw_summary[:bracket_end_match.start()].strip()
+                clean_match = re.search(r"(?:[0-9]{4}[A-Z]{2}_)?([A-Za-z_]+_\d+)(?:-\d+.*)?", full_course_code)
+                course_tag = clean_match.group(1).strip() if clean_match else full_course_code.split("_SEC")[0].split("-")[0]
+
+            if not course_tag:
+                bracket_front_match = re.match(r"^\[(.*?)\]\s*(.*)$", raw_summary)
+                if bracket_front_match:
+                    course_tag = bracket_front_match.group(1).strip()
+                    title = bracket_front_match.group(2).strip() or raw_summary
+
+            if not course_tag and categories and categories.lower() != "canvas":
+                course_tag = categories
+
+            if not course_tag:
+                course_tag = "General"
+
+            # Drop tasks whose tags are NOT allowed by the user
+            if allowed_tags and course_tag not in allowed_tags:
+                continue
+
+            # Register approved tag
+            cursor.execute("INSERT OR IGNORE INTO stack_tags (stack_name, tag_name) VALUES (?, ?)", (target_stack, course_tag))
+
+            # Assignment Link Resolution
             raw_url = str(component.get("URL") or "").strip()
             direct_link = None
 
-            # 1. First, check if the full /courses/<cid>/assignments/<aid> link exists in raw_url or description
             full_match = re.search(r'https?://[^\s<>"\'?#]+/courses/(\d+)/assignments/(\d+)', raw_url) or \
                          re.search(r'https?://[^\s<>"\'?#]+/courses/(\d+)/assignments/(\d+)', description)
 
             if full_match:
-                cid = full_match.group(1)
-                aid = full_match.group(2)
+                cid, aid = full_match.group(1), full_match.group(2)
                 direct_link = f"https://{canvas_domain}/courses/{cid}/assignments/{aid}"
             else:
-                # 2. Extract assignment_id from raw_url hash (#assignment_1803006) or UID (event-assignment-1803006)
                 aid_match = re.search(r'assignment[_-](\d+)', raw_url) or re.search(r'assignment[_-](\d+)', uid)
-                
-                # Extract course_id from include_contexts=course_257726 or /courses/257726
                 cid_match = re.search(r'course[_-](\d+)', raw_url) or \
                             re.search(r'course[_-](\d+)', description) or \
                             re.search(r'/courses/(\d+)', description)
 
                 if aid_match and cid_match:
-                    aid = aid_match.group(1)
-                    cid = cid_match.group(1)
+                    aid, cid = aid_match.group(1), cid_match.group(1)
                     direct_link = f"https://{canvas_domain}/courses/{cid}/assignments/{aid}"
                 elif aid_match:
-                    # Fallback to direct assignment path without extra query params
-                    direct_link = f"https://{canvas_domain}/courses/{aid_match.group(1)}"
+                    direct_link = f"https://{canvas_domain}/assignments/{aid_match.group(1)}"
                 elif raw_url:
-                    # Strip any '?return_to=...' calendar tracking parameters
                     direct_link = raw_url.split('?return_to=')[0]
 
-            # Idempotent Upsert (Prevents duplicates and preserves task status)
+            # Upsert
             cursor.execute("""
                 INSERT INTO assignments (title, course, stack_name, due_date, due_time, link, external_id, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, 'not_started')

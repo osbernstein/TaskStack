@@ -692,25 +692,40 @@
     </div>
   </div>
 
-  <!-- MODAL: Sync Canvas -->
+  <!-- MODAL: Sync Canvas (2-Step Preview) -->
   <div class="modal-overlay" id="canvasModal">
     <div class="modal-card">
       <h3>Sync Canvas Calendar</h3>
-      <div class="form-group">
-        <label>Canvas iCal Feed URL:</label>
-        <input type="url" id="canvasFeedUrl" placeholder="https://school.instructure.com/feeds/calendars/user_..." style="width: 100%;" required />
-        <span style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
-          In Canvas: Calendar &rarr; Calendar Feed (bottom right) &rarr; Copy Link.
-        </span>
+      
+      <!-- Step 1: Input URL & Target Stack -->
+      <div id="canvasStep1">
+        <div class="form-group">
+          <label>Canvas iCal Feed URL:</label>
+          <input type="url" id="canvasFeedUrl" placeholder="https://school.instructure.com/feeds/calendars/user_..." style="width: 100%;" required />
+          <span style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+            In Canvas: Calendar &rarr; Calendar Feed (bottom right) &rarr; Copy Link.
+          </span>
+        </div>
+        <div class="form-group">
+          <label>Import into Stack:</label>
+          <select id="canvasStackSelect" style="width: 100%;"></select>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Import into Stack:</label>
-        <select id="canvasStackSelect" style="width: 100%;"></select>
+
+      <!-- Step 2: Tag Approval Checklist (Hidden initially) -->
+      <div id="canvasStep2" style="display: none;">
+        <p style="font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">
+          Select tags to import (past-due tasks are automatically excluded):
+        </p>
+        <div id="canvasTagChecklist" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.03); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem; margin-bottom: 0.8rem; display: flex; flex-direction: column; gap: 0.4rem;"></div>
       </div>
+
       <div id="canvasSyncStatus" style="font-size: 0.85rem; color: var(--accent); margin-bottom: 0.8rem; display: none;"></div>
+
       <div class="modal-actions">
         <button class="secondary" onclick="closeModals()">Cancel</button>
-        <button class="primary" id="btnSyncCanvas" onclick="submitCanvasSync()">Sync Now</button>
+        <button class="primary" id="btnPreviewCanvas" onclick="submitCanvasPreview()">Continue &rarr;</button>
+        <button class="primary" id="btnSyncCanvas" onclick="submitCanvasSync()" style="display: none;">Sync Approved Tasks</button>
       </div>
     </div>
   </div>
@@ -892,8 +907,74 @@
       document.getElementById('canvasFeedUrl').value = localStorage.getItem('taskstack-canvas-url') || '';
       const sel = document.getElementById('canvasStackSelect');
       sel.innerHTML = stacks.length === 0 ? `<option value="School">School</option>` : stacks.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+      
+      // Reset to Step 1 view
+      document.getElementById('canvasStep1').style.display = 'block';
+      document.getElementById('canvasStep2').style.display = 'none';
+      document.getElementById('btnPreviewCanvas').style.display = 'inline-block';
+      document.getElementById('btnSyncCanvas').style.display = 'none';
       document.getElementById('canvasSyncStatus').style.display = 'none';
+      
       document.getElementById('canvasModal').style.display = 'flex';
+    }
+
+    async function submitCanvasPreview() {
+      const feedUrl = document.getElementById('canvasFeedUrl').value.trim();
+      const targetStack = document.getElementById('canvasStackSelect').value;
+      const statusBox = document.getElementById('canvasSyncStatus');
+      const previewBtn = document.getElementById('btnPreviewCanvas');
+
+      if (!feedUrl) return alert("Please paste your Canvas iCal link.");
+      localStorage.setItem('taskstack-canvas-url', feedUrl);
+
+      previewBtn.disabled = true;
+      statusBox.style.display = 'block';
+      statusBox.innerText = "Inspecting upcoming Canvas tasks...";
+
+      try {
+        const res = await fetch('/canvas/inspect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ feed_url: feedUrl, target_stack: targetStack })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          statusBox.innerText = `Error: ${data.detail || 'Could not inspect feed'}`;
+          previewBtn.disabled = false;
+          return;
+        }
+
+        if (!data.detected_tags || data.detected_tags.length === 0) {
+          statusBox.innerText = "No upcoming tasks found in feed.";
+          previewBtn.disabled = false;
+          return;
+        }
+
+        // Render checklist: pre-check existing tags, leave novel tags unchecked
+        const listContainer = document.getElementById('canvasTagChecklist');
+        listContainer.innerHTML = data.detected_tags.map(item => `
+          <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; padding: 0.3rem 0.5rem; background: rgba(255,255,255,0.7); border-radius: 6px; cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" class="canvas-tag-cb" value="${item.tag}" ${item.already_in_stack ? 'checked' : ''} />
+              <span style="font-weight: 700;">${item.tag}</span>
+              ${!item.already_in_stack ? '<span style="font-size: 0.7rem; color: #dc2626; font-weight: 700;">(NEW TAG)</span>' : ''}
+            </div>
+            <span style="color: var(--text-muted); font-size: 0.75rem;">${item.count} upcoming task(s)</span>
+          </label>
+        `).join('');
+
+        // Switch to Step 2
+        document.getElementById('canvasStep1').style.display = 'none';
+        document.getElementById('canvasStep2').style.display = 'block';
+        previewBtn.style.display = 'none';
+        document.getElementById('btnSyncCanvas').style.display = 'inline-block';
+        statusBox.style.display = 'none';
+      } catch (err) {
+        statusBox.innerText = `Network error: ${err.message}`;
+      } finally {
+        previewBtn.disabled = false;
+      }
     }
 
     // --- Stacks & Tag Management ---
@@ -1392,18 +1473,26 @@
       const statusBox = document.getElementById('canvasSyncStatus');
       const syncBtn = document.getElementById('btnSyncCanvas');
 
-      if (!feedUrl) return alert("Please paste your Canvas iCal link.");
-      localStorage.setItem('taskstack-canvas-url', feedUrl);
+      // Gather approved tags
+      const selectedTags = Array.from(document.querySelectorAll('.canvas-tag-cb:checked')).map(cb => cb.value);
+
+      if (selectedTags.length === 0) {
+        return alert("Please select at least one tag to sync, or click Cancel.");
+      }
 
       syncBtn.disabled = true;
       statusBox.style.display = 'block';
-      statusBox.innerText = "Syncing assignments and class tags...";
+      statusBox.innerText = "Syncing approved tasks...";
 
       try {
         const res = await fetch('/canvas/sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ feed_url: feedUrl, target_stack: targetStack })
+          body: JSON.stringify({
+            feed_url: feedUrl,
+            target_stack: targetStack,
+            allowed_tags: selectedTags
+          })
         });
         const data = await res.json();
         if (res.ok) {
@@ -1415,7 +1504,7 @@
             openStackView(targetStack);
           }, 800);
         } else {
-          statusBox.innerText = `Error: ${data.detail || 'Could not sync feed'}`;
+          statusBox.innerText = `Error: ${data.detail || 'Could not sync'}`;
           syncBtn.disabled = false;
         }
       } catch (err) {
