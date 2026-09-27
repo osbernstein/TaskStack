@@ -415,10 +415,24 @@
       font-weight: 600;
       border: 1px solid var(--card-border);
       cursor: pointer;
+      outline: none;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
-    .status-select.not_started { background: rgba(255, 255, 255, 0.85); color: #475569; }
-    .status-select.in_progress { background: #fef3c7; color: #b45309; }
-    .status-select.done { background: #dcfce7; color: #15803d; }
+    .status-select.not_started {
+      background-color: rgba(255, 255, 255, 0.85);
+      color: #475569;
+      border-color: var(--card-border);
+    }
+    .status-select.in_progress {
+      background-color: #fef9c3 !important; /* light yellow */
+      color: #854d0e !important;          /* dark amber text */
+      border-color: #fde047 !important;
+    }
+    .status-select.done {
+      background-color: #dcfce7 !important; /* light green */
+      color: #15803d !important;          /* dark green text */
+      border-color: #86efac !important;
+    }
 
     .btn-delete {
       background: rgba(239, 68, 68, 0.1);
@@ -1322,7 +1336,7 @@
 
             <!-- Status & Action Controls -->
             <div class="actions">
-              <select class="status-select ${t.status}" onchange="updateStatus(${t.id}, this.value)">
+              <select class="status-select ${t.status}" onchange="updateStatus(${t.id}, this.value, this)">
                 <option value="not_started" ${t.status === 'not_started' ? 'selected' : ''}>Not Started</option>
                 <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
                 <option value="done" ${t.status === 'done' ? 'selected' : ''}>Done</option>
@@ -1467,7 +1481,10 @@
       openStackView(payload.stack_name);
     });
 
-    async function updateStatus(id, nextStatus) {
+    async function updateStatus(id, nextStatus, el) {
+      if (el) {
+        el.className = `status-select ${nextStatus}`;
+      }
       await fetch(`/assignments/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
