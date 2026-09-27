@@ -712,11 +712,18 @@
         </div>
       </div>
 
-      <!-- Step 2: Tag Approval Checklist (Hidden initially) -->
+      <!-- Step 2: Tag Approval Checklist -->
       <div id="canvasStep2" style="display: none;">
         <p style="font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">
-          Select tags to import (past-due tasks are automatically excluded):
+          Select tags to import:
         </p>
+
+        <!-- Toggle for Past Due Tasks -->
+        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.75rem; cursor: pointer; color: var(--text);">
+          <input type="checkbox" id="canvasIncludePastDue" onchange="submitCanvasPreview()" />
+          Include past-due tasks
+        </label>
+
         <div id="canvasTagChecklist" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.03); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem; margin-bottom: 0.8rem; display: flex; flex-direction: column; gap: 0.4rem;"></div>
       </div>
 
@@ -915,6 +922,10 @@
       document.getElementById('btnSyncCanvas').style.display = 'none';
       document.getElementById('canvasSyncStatus').style.display = 'none';
       
+      // Reset include past-due checkbox
+      const pastDueCb = document.getElementById('canvasIncludePastDue');
+      if (pastDueCb) pastDueCb.checked = false;
+      
       document.getElementById('canvasModal').style.display = 'flex';
     }
 
@@ -923,19 +934,24 @@
       const targetStack = document.getElementById('canvasStackSelect').value;
       const statusBox = document.getElementById('canvasSyncStatus');
       const previewBtn = document.getElementById('btnPreviewCanvas');
+      const includePastDue = document.getElementById('canvasIncludePastDue')?.checked || false;
 
       if (!feedUrl) return alert("Please paste your Canvas iCal link.");
       localStorage.setItem('taskstack-canvas-url', feedUrl);
 
       previewBtn.disabled = true;
       statusBox.style.display = 'block';
-      statusBox.innerText = "Inspecting upcoming Canvas tasks...";
+      statusBox.innerText = includePastDue ? "Inspecting all Canvas tasks (including past-due)..." : "Inspecting upcoming Canvas tasks...";
 
       try {
         const res = await fetch('/canvas/inspect', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ feed_url: feedUrl, target_stack: targetStack })
+          body: JSON.stringify({ 
+            feed_url: feedUrl, 
+            target_stack: targetStack,
+            include_past_due: includePastDue 
+          })
         });
         const data = await res.json();
 
@@ -1472,6 +1488,7 @@
       const targetStack = document.getElementById('canvasStackSelect').value;
       const statusBox = document.getElementById('canvasSyncStatus');
       const syncBtn = document.getElementById('btnSyncCanvas');
+      const includePastDue = document.getElementById('canvasIncludePastDue')?.checked || false;
 
       // Gather approved tags
       const selectedTags = Array.from(document.querySelectorAll('.canvas-tag-cb:checked')).map(cb => cb.value);
@@ -1491,7 +1508,8 @@
           body: JSON.stringify({
             feed_url: feedUrl,
             target_stack: targetStack,
-            allowed_tags: selectedTags
+            allowed_tags: selectedTags,
+            include_past_due: includePastDue
           })
         });
         const data = await res.json();

@@ -107,11 +107,13 @@ class AssignmentUpdate(BaseModel):
 class CanvasInspectRequest(BaseModel):
     feed_url: str
     target_stack: str
+    include_past_due: bool = False
 
 class CanvasSyncRequest(BaseModel):
     feed_url: str
     target_stack: str
     allowed_tags: list[str] = []
+    include_past_due: bool = False
 
 # --- UI Root ---
 
@@ -308,8 +310,8 @@ async def inspect_canvas_feed(payload: CanvasInspectRequest):
         else:
             continue
 
-        # Past-due filter: ignore expired tasks
-        if due_dt < now:
+        # Past-due filter: skip only if include_past_due is False
+        if not payload.include_past_due and due_dt < now:
             continue
 
         # Extract tag
@@ -396,7 +398,7 @@ async def sync_canvas_feed(payload: CanvasSyncRequest):
             description = str(component.get("DESCRIPTION") or "")
             categories = str(component.get("CATEGORIES") or "").strip()
 
-            # Past-due filter check
+            # Past-due filter check (respects include_past_due toggle)
             dtend = component.get("DTEND") or component.get("DTSTART")
             due_date_str = None
             due_time_str = None
@@ -406,12 +408,12 @@ async def sync_canvas_feed(payload: CanvasSyncRequest):
                 if isinstance(dt_val, datetime):
                     if dt_val.tzinfo:
                         dt_val = dt_val.astimezone().replace(tzinfo=None)
-                    if dt_val < now:
+                    if not payload.include_past_due and dt_val < now:
                         continue
                     due_date_str = dt_val.strftime("%Y-%m-%d")
                     due_time_str = dt_val.strftime("%H:%M")
                 elif isinstance(dt_val, date):
-                    if datetime.combine(dt_val, datetime.max.time()) < now:
+                    if not payload.include_past_due and datetime.combine(dt_val, datetime.max.time()) < now:
                         continue
                     due_date_str = dt_val.strftime("%Y-%m-%d")
                     due_time_str = "23:59"
