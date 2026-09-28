@@ -461,10 +461,29 @@
       border: 1px solid var(--card-border);
       backdrop-filter: blur(25px);
       border-radius: 18px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 480px;
+      padding: 2.2rem 2.5rem;
+      width: 95%;
+      max-width: 720px;
+      box-sizing: border-box;
       box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+    }
+
+    .modal-card form {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .modal-card .form-group {
+      min-width: 0;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .modal-card input,
+    .modal-card select {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     .modal-card h3 { margin-bottom: 1.2rem; }
     .form-group { margin-bottom: 1.1rem; }
@@ -681,6 +700,54 @@
         <!-- Right Column: Independently Scrollable Tasks Container -->
         <div class="tasks-scroll-container" id="tasksContainer"></div>
       </div>
+    </div>
+  </div>
+  
+  <!-- MODAL: Edit Task -->
+  <div class="modal-overlay" id="editTaskModal">
+    <div class="modal-card">
+      <h3>Edit Task</h3>
+      <form id="editTaskForm" onsubmit="handleEditTaskSubmit(event)" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; width: 100%;">
+        <input type="hidden" id="editTaskId" />
+        
+        <div class="full-width form-group" style="margin-bottom: 0;">
+          <label>Task Title</label>
+          <input type="text" id="editTaskTitle" style="width: 100%;" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Stack</label>
+          <select id="editTaskStack" onchange="updateTagChoicesForEditModal()" style="width: 100%;" required></select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Course Tag</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <select id="editTaskTagSelect" style="flex: 1;"></select>
+            <input type="text" id="editTaskTagCustom" placeholder="Or new..." style="flex: 1;" />
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Due Date</label>
+          <input type="date" id="editTaskDueDate" style="width: 100%;" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Due Time</label>
+          <input type="time" id="editTaskDueTime" style="width: 100%;" />
+        </div>
+
+        <div class="full-width form-group" style="margin-bottom: 0;">
+          <label>Link (optional)</label>
+          <input type="url" id="editTaskLink" placeholder="https://..." style="width: 100%;" />
+        </div>
+
+        <div class="modal-actions full-width">
+          <button type="button" class="secondary" onclick="closeModals()">Cancel</button>
+          <button type="submit" class="primary">Save Changes</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -1226,6 +1293,7 @@
 
       const res = await fetch(url);
       let tasks = await res.json();
+      allLoadedTasks = tasks;
       const container = document.getElementById('tasksContainer');
 
       // 1. Apply Tag Filter
@@ -1311,7 +1379,9 @@
             <div style="flex-grow: 1; min-width: 0;">
               <div style="font-weight: 600; font-size: 0.98rem; color: var(--text); margin-bottom: 0.2rem; ${t.status === 'done' ? 'text-decoration: line-through; opacity: 0.5;' : ''}" class="${isDueSoon ? 'due-soon-text' : ''}">
                 ${isOverdue ? '<span class="badge-late">&#9888; LATE</span> ' : ''}
-                ${t.title}
+                <span onclick="openEditTaskModal(${t.id})" style="cursor: pointer; text-decoration-line: ${t.status === 'done' ? 'line-through' : 'none'};" title="Click to edit task">
+                  ${t.title}
+                </span>
               </div>
               <div class="meta">
                 <span class="tag-badge" style="background: rgba(0,0,0,0.05); color: var(--text);">${t.stack_name}</span>
@@ -1353,6 +1423,85 @@
       const sel = document.getElementById(`tag-select-${taskId}`);
       sel.style.display = 'inline-block';
       sel.focus();
+    }
+
+    let allLoadedTasks = [];
+
+    // Update fetchAssignments to store current tasks cache
+    // Inside fetchAssignments(), right after: let tasks = await res.json();
+    // Add: allLoadedTasks = tasks;
+
+    async function openEditTaskModal(taskId) {
+      const task = allLoadedTasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      document.getElementById('editTaskId').value = task.id;
+      document.getElementById('editTaskTitle').value = task.title;
+      document.getElementById('editTaskDueDate').value = task.due_date || '';
+      document.getElementById('editTaskDueTime').value = task.due_time || '23:59';
+      document.getElementById('editTaskLink').value = task.link || '';
+      document.getElementById('editTaskTagCustom').value = '';
+
+      // Populate stacks dropdown
+      const stackSel = document.getElementById('editTaskStack');
+      stackSel.innerHTML = stacks.length === 0
+        ? `<option value="General">General</option>`
+        : stacks.map(s => `<option value="${s.name}" ${s.name === task.stack_name ? 'selected' : ''}>${s.name}</option>`).join('');
+
+      await updateTagChoicesForEditModal(task.course);
+
+      document.getElementById('editTaskModal').style.display = 'flex';
+    }
+
+    async function updateTagChoicesForEditModal(selectedCourseTag = null) {
+      const selectedStack = document.getElementById('editTaskStack').value;
+      const res = await fetch(`/stacks/${encodeURIComponent(selectedStack)}/tags`);
+      const tags = await res.json();
+      const tagSel = document.getElementById('editTaskTagSelect');
+      
+      const currentSelected = selectedCourseTag || tagSel.value;
+      tagSel.innerHTML = tags.map(t => `<option value="${t}" ${t === currentSelected ? 'selected' : ''}>${t}</option>`).join('');
+
+      // If the task has a tag not registered in the stack, add it as an option
+      if (currentSelected && !tags.includes(currentSelected)) {
+        tagSel.innerHTML = `<option value="${currentSelected}" selected>${currentSelected}</option>` + tagSel.innerHTML;
+      }
+    }
+
+    async function handleEditTaskSubmit(e) {
+      e.preventDefault();
+      const taskId = document.getElementById('editTaskId').value;
+      const customTag = document.getElementById('editTaskTagCustom').value.trim();
+      const dropdownTag = document.getElementById('editTaskTagSelect').value;
+      const finalCourse = customTag || dropdownTag || 'General';
+
+      const payload = {
+        title: document.getElementById('editTaskTitle').value.trim(),
+        stack_name: document.getElementById('editTaskStack').value,
+        course: finalCourse,
+        due_date: document.getElementById('editTaskDueDate').value,
+        due_time: document.getElementById('editTaskDueTime').value || null,
+        link: document.getElementById('editTaskLink').value.trim() || null
+      };
+
+      const res = await fetch(`/assignments/${taskId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        closeModals();
+        if (payload.stack_name !== activeStack && activeStack !== 'All') {
+          openStackView(payload.stack_name);
+        } else {
+          await loadTagsForStack(activeStack);
+          fetchAssignments();
+        }
+      } else {
+        const err = await res.json();
+        alert(err.detail || 'Could not update task.');
+      }
     }
 
     async function reassignTaskTag(taskId, newTag) {
