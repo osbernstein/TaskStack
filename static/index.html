@@ -818,6 +818,23 @@
     </div>
   </div>
 
+  <!-- MODAL: Synced Tasks Summary -->
+  <div class="modal-overlay" id="syncedSummaryModal">
+    <div class="modal-card" style="max-width: 650px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 id="syncedSummaryTitle" style="margin: 0;">Synced Tasks</h3>
+        <button onclick="dismissSyncSummaryModal()" style="background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0.2rem 0.5rem;">&times;</button>
+      </div>
+      <p id="syncedSummarySubtitle" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.9rem;"></p>
+      
+      <div id="syncedTasksList" style="max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-right: 0.3rem;"></div>
+      
+      <div class="modal-actions" style="margin-top: 1.2rem;">
+        <button class="primary" onclick="dismissSyncSummaryModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: Delete Stack -->
   <div class="modal-overlay" id="deleteModal">
     <div class="modal-card">
@@ -1071,6 +1088,17 @@
         statusBox.innerText = `Network error: ${err.message}`;
       } finally {
         previewBtn.disabled = false;
+      }
+    }
+
+    let pendingSyncTargetStack = null;
+
+    async function dismissSyncSummaryModal() {
+      document.getElementById('syncedSummaryModal').style.display = 'none';
+      if (pendingSyncTargetStack) {
+        await loadStacks();
+        openStackView(pendingSyncTargetStack);
+        pendingSyncTargetStack = null;
       }
     }
 
@@ -1697,7 +1725,6 @@
       const syncBtn = document.getElementById('btnSyncCanvas');
       const includePastDue = document.getElementById('canvasIncludePastDue')?.checked || false;
 
-      // Gather approved tags
       const selectedTags = Array.from(document.querySelectorAll('.canvas-tag-cb:checked')).map(cb => cb.value);
 
       if (selectedTags.length === 0) {
@@ -1720,14 +1747,57 @@
           })
         });
         const data = await res.json();
+
         if (res.ok) {
-          statusBox.innerText = `Synced ${data.imported} items!`;
-          setTimeout(async () => {
-            closeModals();
-            syncBtn.disabled = false;
-            await loadStacks();
-            openStackView(targetStack);
-          }, 800);
+          closeModals();
+          syncBtn.disabled = false;
+          pendingSyncTargetStack = targetStack;
+
+          // Populate the summary modal
+          document.getElementById('syncedSummaryTitle').innerText = `Synced ${data.imported} Task(s)`;
+          document.getElementById('syncedSummarySubtitle').innerText = `Added/updated in stack: ${targetStack}`;
+
+          // Populate the summary modal
+          const newCount = (data.tasks || []).filter(t => t.change_type === 'new').length;
+          const updatedCount = (data.tasks || []).filter(t => t.change_type === 'updated').length;
+
+          document.getElementById('syncedSummaryTitle').innerText = `${data.imported} Task Update(s)`;
+          document.getElementById('syncedSummarySubtitle').innerText = `${newCount} new, ${updatedCount} modified in stack: ${targetStack}`;
+
+          const listContainer = document.getElementById('syncedTasksList');
+          if (!data.tasks || data.tasks.length === 0) {
+            listContainer.innerHTML = `
+              <div style="text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 2rem 1rem;">
+                <p style="font-weight: 700; margin-bottom: 0.3rem;">All caught up!</p>
+                <p style="font-size: 0.8rem;">No new tasks or deadline changes detected for the selected tags.</p>
+              </div>
+            `;
+          } else {
+            listContainer.innerHTML = data.tasks.map(t => {
+              const formattedDate = formatDueDate(t.due_date);
+              const formattedTime = formatDueTime(t.due_time);
+              const isNew = t.change_type === 'new';
+
+              return `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.7); border: 1px solid var(--card-border); border-radius: 8px; font-size: 0.85rem; gap: 0.75rem;">
+                  <div style="min-width: 0; flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem;">
+                      <span style="font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.4rem; border-radius: 4px; ${isNew ? 'background: #dcfce7; color: #15803d;' : 'background: #fef3c7; color: #b45309;'}">
+                        ${isNew ? 'NEW' : 'UPDATED'}
+                      </span>
+                      <span style="font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.title}</span>
+                    </div>
+                    <span class="tag-badge" style="${getTagStyle(t.course)};">${t.course}</span>
+                  </div>
+                  <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; text-align: right;">
+                    ${formattedDate} ${formattedTime ? `<span style="font-weight: 500;">${formattedTime}</span>` : ''}
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+
+          document.getElementById('syncedSummaryModal').style.display = 'flex';
         } else {
           statusBox.innerText = `Error: ${data.detail || 'Could not sync'}`;
           syncBtn.disabled = false;

@@ -379,7 +379,7 @@ async def sync_canvas_feed(payload: CanvasSyncRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid iCal format: {str(e)}")
 
-    imported_count = 0
+    synced_items = []
     now = datetime.now()
 
     with get_db() as conn:
@@ -448,7 +448,6 @@ async def sync_canvas_feed(payload: CanvasSyncRequest):
             if allowed_tags and course_tag not in allowed_tags:
                 continue
 
-            # Register approved tag
             cursor.execute("INSERT OR IGNORE INTO stack_tags (stack_name, tag_name) VALUES (?, ?)", (target_stack, course_tag))
 
             # Assignment Link Resolution
@@ -475,23 +474,59 @@ async def sync_canvas_feed(payload: CanvasSyncRequest):
                 elif raw_url:
                     direct_link = raw_url.split('?return_to=')[0]
 
-            # Upsert
-            cursor.execute("""
-                INSERT INTO assignments (title, course, stack_name, due_date, due_time, link, external_id, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'not_started')
-                ON CONFLICT(external_id) DO UPDATE SET
-                    title = excluded.title,
-                    course = excluded.course,
-                    due_date = excluded.due_date,
-                    due_time = excluded.due_time,
-                    link = excluded.link;
-            """, (title, course_tag, target_stack, due_date_str, due_time_str, direct_link, uid))
+            # Query existing task by external_id
+            existing = cursor.execute("""
+                SELECT id, title, course, due_date, due_time, link 
+                FROM assignments 
+                WHERE external_id = ?
+            """, (uid,)).fetchone()
 
-            imported_count += 1
+            if not existing:
+                # 1. Brand New Task
+                cursor.execute("""
+                    INSERT INTO assignments (title, course, stack_name, due_date, due_time, link, external_id, status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'not_started')
+                """, (title, course_tag, target_stack, due_date_str, due_time_str, direct_link, uid))
 
+                synced_items.append({
+                    "title": title,
+                    "course": course_tag,
+                    "due_date": due_date_str,
+                    "due_time": due_time_str,
+                    "change_type": "new"
+                })
+            else:
+                # 2. Existing Task: Check if title, course, due_date, due_time, or link changed
+                has_changed = (
+                    (existing["title"] or "").strip() != title or
+                    (existing["course"] or "").strip() != course_tag or
+                    (existing["due_date"] or "").strip() != due_date_str or
+                    (existing["due_time"] or "").strip() != (due_time_str or "") or
+                    (existing["link"] or "").strip() != (direct_link or "")
+                )
+
+                if has_changed:
+                    cursor.execute("""
+                        UPDATE assignments 
+                        SET title = ?, course = ?, due_date = ?, due_time = ?, link = ?
+                        WHERE id = ?
+                    """, (title, course_tag, due_date_str, due_time_str, direct_link, existing["id"]))
+
+                    synced_items.append({
+                        "title": title,
+                        "course": course_tag,
+                        "due_date": due_date_str,
+                        "due_time": due_time_str,
+                        "change_type": "updated"
+                    })
+                # If unchanged, do nothing and omit from synced_items
         conn.commit()
 
-    return {"imported": imported_count, "target_stack": target_stack}
+    return {
+        "imported": len(synced_items),
+        "target_stack": target_stack,
+        "tasks": synced_items
+    }
 
 # --- Batch Operations Endpoints ---
 
