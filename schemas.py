@@ -52,11 +52,12 @@ class CanvasSyncRequest(BaseModel):
 
 class BatchTaskItem(BaseModel):
     title: str
-    due_date: Optional[str] = None
+    course: Optional[str] = None
+    due_date: str
     due_time: Optional[str] = None
     link: Optional[str] = None
 
 class BatchAssignmentCreate(BaseModel):
     stack_name: str
-    course: str
+    course: Optional[str] = None  # shared tag, used for any task without its own
     tasks: List[BatchTaskItem]

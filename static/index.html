@@ -57,22 +57,38 @@
     <!-- Create Task View -->
     <div class="view-panel" id="createView">
       <button class="back-btn" onclick="showHomeView()">&larr; Back to Menu</button>
-      <h3 style="margin-bottom: 1.5rem;">Create New Task</h3>
+      <h3 style="margin-bottom: 1.5rem;">Create New Tasks</h3>
       <form id="createTaskForm">
-        <input type="text" id="title" class="full-width" placeholder="Task Name" required />
-        
-        <select id="stackSelect" onchange="updateTagChoicesForTaskForm()" required></select>
+        <select id="stackSelect" class="full-width" onchange="updateTagChoicesForTaskForm()" required></select>
 
-        <div style="display: flex; gap: 0.5rem;">
-          <select id="courseTagSelect" style="flex: 1;"></select>
-          <input type="text" id="customCourseTagInput" placeholder="Or new tag..." style="flex: 1;" />
-        </div>
+        <label class="full-width shared-tag-toggle">
+          <input type="checkbox" id="useSharedTag" onchange="syncSharedTag()" />
+          All tasks use Task 1's tag
+        </label>
 
-        <input type="date" id="due_date" required />
-        <input type="time" id="due_time" value="23:59" />
-        <input type="url" id="link" class="full-width" placeholder="Link (optional)" />
-        <button type="submit" class="primary full-width">Add Task to Stack</button>
+        <div id="taskRows" class="full-width"></div>
+
+        <button type="button" class="secondary full-width" onclick="addTaskRow()">+ Add Another Task</button>
+        <button type="submit" class="primary full-width" id="createTasksBtn">Add Task to Stack</button>
       </form>
+
+      <!-- One of these is cloned per task by addTaskRow() -->
+      <template id="taskRowTemplate">
+        <div class="task-row">
+          <div class="task-row-header">
+            <span class="task-row-label">Task 1</span>
+            <button type="button" class="task-row-remove" onclick="removeTaskRow(this)" title="Remove task">&times;</button>
+          </div>
+          <input type="text" class="row-title full-width" placeholder="Task Name" required />
+          <div class="row-tag-group full-width" style="display: flex; gap: 0.5rem;">
+            <select class="row-tag-select tag-choice" onchange="syncSharedTag()" style="flex: 1;"></select>
+            <input type="text" class="row-tag-input" placeholder="Or new tag..." oninput="syncSharedTag()" style="flex: 1;" />
+          </div>
+          <input type="date" class="row-due-date" required />
+          <input type="time" class="row-due-time" value="23:59" />
+          <input type="url" class="row-link full-width" placeholder="Link (optional)" />
+        </div>
+      </template>
     </div>
 
     <!-- Task List View (Clean Header + Left Tag Sidebar + Right Scrollable Tasks) -->

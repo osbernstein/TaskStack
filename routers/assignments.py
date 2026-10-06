@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Query, status
 
 from database import get_db
-from schemas import AssignmentCreate, AssignmentUpdate, BatchUpdate, BatchDelete
+from schemas import AssignmentCreate, AssignmentUpdate, BatchAssignmentCreate, BatchUpdate, BatchDelete
 
 router = APIRouter()
 
@@ -36,6 +36,33 @@ def batch_delete_assignments(payload: BatchDelete):
         cursor.execute(f"DELETE FROM assignments WHERE id IN ({placeholders})", payload.task_ids)
         conn.commit()
         return {"deleted": cursor.rowcount}
+
+@router.post("/assignments/batch/create", status_code=status.HTTP_201_CREATED)
+def batch_create_assignments(payload: BatchAssignmentCreate):
+    stack_name = payload.stack_name.strip()
+    if not stack_name or stack_name.lower() == "all":
+        raise HTTPException(status_code=400, detail="Select a valid stack.")
+    if not payload.tasks:
+        raise HTTPException(status_code=400, detail="No tasks provided.")
+    for t in payload.tasks:
+        if not t.title.strip() or not t.due_date:
+            raise HTTPException(status_code=400, detail="Every task needs a name and a due date.")
+
+    with get_db() as conn:
+        cursor = conn.cursor()
+        new_ids = []
+        for t in payload.tasks:
+            course = (t.course or payload.course or "").strip() or "General"
+            cursor.execute("INSERT OR IGNORE INTO stack_tags (stack_name, tag_name) VALUES (?, ?)", (stack_name, course))
+            cursor.execute("""
+                INSERT INTO assignments (title, course, stack_name, due_date, due_time, status, link)
+                VALUES (?, ?, ?, ?, ?, 'not_started', ?)
+            """, (t.title.strip(), course, stack_name, t.due_date, t.due_time, t.link))
+            new_ids.append(cursor.lastrowid)
+        conn.commit()
+        placeholders = ",".join(["?"] * len(new_ids))
+        rows = cursor.execute(f"SELECT * FROM assignments WHERE id IN ({placeholders}) ORDER BY id", new_ids).fetchall()
+        return [dict(r) for r in rows]
 
 # --- Standard Assignments CRUD ---
 

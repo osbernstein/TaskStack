@@ -15,6 +15,16 @@
 /* Form Controls */
 #createTaskForm { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .full-width { grid-column: 1 / -1; }
+#taskRows { display: flex; flex-direction: column; gap: 1rem; }
+.task-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+  padding: 1rem; border: 1px solid var(--card-border); border-radius: 12px;
+}
+.task-row-header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
+.task-row-label { font-weight: 700; font-size: 0.85rem; color: var(--text-muted); }
+.task-row-remove { background: none; border: none; font-size: 1.3rem; line-height: 1; padding: 0 0.4rem; cursor: pointer; color: var(--text-muted); }
+.task-row:only-child .task-row-remove { display: none; }
+.shared-tag-toggle { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 600; }
 
 input, select, button {
   padding: 0.75rem 0.9rem;
