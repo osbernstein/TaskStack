@@ -27,6 +27,12 @@ async function fetchAssignments() {
   allLoadedTasks = tasks;
   const container = document.getElementById('tasksContainer');
 
+  // 0. Split off "Saved for later" tasks: the main list hides them, the
+  //    Saved for later view shows only them. Sorting below applies to both.
+  savedForLaterCount = tasks.filter(t => t.status === 'later').length;
+  updateSavedForLaterHeader();
+  tasks = tasks.filter(t => showSavedForLater ? t.status === 'later' : t.status !== 'later');
+
   // 1. Apply Tag Filter
   if (currentFilterTag !== 'all') {
     tasks = tasks.filter(t => (t.course || '').trim().toLowerCase() === currentFilterTag);
@@ -38,14 +44,16 @@ async function fetchAssignments() {
   }
 
   if (tasks.length === 0) {
-    container.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin: 3rem 0;">No tasks found.</p>`;
+    const emptyMsg = showSavedForLater ? 'Nothing saved for later in this stack.' : 'No tasks found.';
+    container.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin: 3rem 0;">${emptyMsg}</p>`;
     return;
   }
 
   const statusWeight = {
     'not_started': 0,
     'in_progress': 1,
-    'done': 2
+    'done': 2,
+    'later': 3
   };
 
   tasks.sort((a, b) => {
@@ -141,12 +149,32 @@ async function fetchAssignments() {
             <option value="not_started" ${t.status === 'not_started' ? 'selected' : ''}>Not Started</option>
             <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
             <option value="done" ${t.status === 'done' ? 'selected' : ''}>Done</option>
+            <option value="later" ${t.status === 'later' ? 'selected' : ''}>Save for Later</option>
           </select>
           <button class="btn-delete" title="Delete Task" onclick="deleteTask(${t.id})">&times;</button>
         </div>
       </div>
     `;
   }).join('');
+}
+
+let savedForLaterCount = 0;
+
+// Switch between the stack's main task list and its "Saved for later" list.
+function toggleSavedForLater() {
+  showSavedForLater = !showSavedForLater;
+  fetchAssignments();
+}
+
+function updateSavedForLaterHeader() {
+  const base = activeStack === 'All' ? 'All Tasks' : activeStack;
+  document.getElementById('currentStackHeading').innerText = showSavedForLater ? `${base}: Saved for later` : base;
+  const btn = document.getElementById('btnSavedForLater');
+  if (!btn) return;
+  btn.innerText = showSavedForLater
+    ? '\u2190 Back to tasks'
+    : `Saved for later${savedForLaterCount ? ` (${savedForLaterCount})` : ''}`;
+  btn.classList.toggle('active', showSavedForLater);
 }
 
 function showInlineTagSelect(taskId) {

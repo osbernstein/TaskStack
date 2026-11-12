@@ -15,13 +15,14 @@ async function openStackView(stackName) {
   currentSortCriterion = 'due_date';
   currentFilterTag = 'all';
   currentFilterStatus = 'all';
+  showSavedForLater = false;
 
   const sortSel = document.getElementById('sortCriterionSelect');
   if (sortSel) sortSel.selectedIndex = 0; // displays "Filter" placeholder
 
   document.getElementById('batchActionBar').style.display = 'none';
   document.getElementById('btnToggleEdit').innerText = 'Edit';
-  document.getElementById('currentStackHeading').innerText = stackName === 'All' ? 'All Tasks' : stackName;
+  updateSavedForLaterHeader();
   hideAllViews();
   document.getElementById('listView').style.display = 'block';
   await loadTagsForStack(stackName);

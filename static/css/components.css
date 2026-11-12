@@ -48,6 +48,12 @@ button.secondary {
   font-weight: 600;
   cursor: pointer;
 }
+/* "Saved for later" button while that view is open */
+button.secondary.active {
+  background: #ede9fe;
+  color: #6d28d9;
+  border-color: #c4b5fd;
+}
 
 /* Task Card */
 .task-card {
@@ -122,6 +128,12 @@ button.secondary {
   background-color: #dcfce7 !important; /* light green */
   color: #15803d !important;          /* dark green text */
   border-color: #86efac !important;
+}
+
+.status-select.later {
+  background-color: #ede9fe !important; /* light violet */
+  color: #6d28d9 !important;          /* dark violet text */
+  border-color: #c4b5fd !important;
 }
 
 .btn-delete {

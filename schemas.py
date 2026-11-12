@@ -1,5 +1,8 @@
-from typing import Optional, List
+from typing import Optional, List, Literal
 from pydantic import BaseModel
+
+# Allowed task statuses. 'later' is "Saved for later".
+TaskStatus = Literal['not_started', 'in_progress', 'done', 'later']
 
 class StackCreate(BaseModel):
     name: str
@@ -10,7 +13,7 @@ class StackTagAdd(BaseModel):
 
 class BatchUpdate(BaseModel):
     task_ids: List[int]
-    status: Optional[str] = None
+    status: Optional[TaskStatus] = None
     course: Optional[str] = None
 
 class BatchDelete(BaseModel):
@@ -27,7 +30,7 @@ class AssignmentCreate(BaseModel):
     stack_name: str
     due_date: str
     due_time: Optional[str] = None
-    status: Optional[str] = "not_started"
+    status: Optional[TaskStatus] = "not_started"
     link: Optional[str] = None
 
 class AssignmentUpdate(BaseModel):
@@ -36,7 +39,7 @@ class AssignmentUpdate(BaseModel):
     stack_name: Optional[str] = None
     due_date: Optional[str] = None
     due_time: Optional[str] = None
-    status: Optional[str] = None
+    status: Optional[TaskStatus] = None
     link: Optional[str] = None
 
 class CanvasInspectRequest(BaseModel):

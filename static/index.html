@@ -122,6 +122,7 @@
             </optgroup>
           </select>
 
+          <button class="secondary" id="btnSavedForLater" onclick="toggleSavedForLater()">Saved for later</button>
           <button class="secondary" id="btnToggleEdit" onclick="toggleEditMode()">Edit</button>
           <button class="primary" onclick="showCreateTaskView()">+ New Task</button>
         </div>
@@ -146,6 +147,7 @@
               <option value="not_started">Not Started</option>
               <option value="in_progress">In Progress</option>
               <option value="done">Done</option>
+              <option value="later">Save for Later</option>
             </select>
             <button class="secondary" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" onclick="applyBatchStatus()">Apply</button>
 

@@ -7,3 +7,4 @@ let currentSortCriterion = 'due_date';
 let currentFilterTag = 'all';
 let currentFilterStatus = 'all';
 let allLoadedTasks = [];
+let showSavedForLater = false; // true = viewing the stack's "Saved for later" tasks
